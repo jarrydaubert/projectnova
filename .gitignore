@@ -1,0 +1,57 @@
+# Xcode
+*.xcodeproj/*
+!*.xcodeproj/project.pbxproj
+!*.xcodeproj/xcshareddata/
+*.xcworkspace/*
+!*.xcworkspace/contents.xcworkspacedata
+xcuserdata/
+DerivedData/
+.swiftpm/
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Swift Package Manager
+.build/
+Packages/
+Package.resolved
+
+# CocoaPods (if used in future)
+Pods/
+
+# Secrets & API Keys
+.env
+*.plist.production
+config/secrets.swift
+**/APIKeys.swift
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Testing
+*.gcda
+*.gcno
+xcov/
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Reference images (large files)
+flashloop/
+
+# Archives
+*.xcarchive
+
+# Crash logs
+*.crash
+
+# Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# Code Injection
+.inject.md

@@ -1,0 +1,170 @@
+{
+  "identifier" : "Products",
+  "nonRenewingSubscriptions" : [
+
+  ],
+  "products" : [
+    {
+      "displayPrice" : "4.99",
+      "familyShareable" : false,
+      "internalID" : "credit_pack_starter",
+      "localizations" : [
+        {
+          "description" : "500 credits for video generation",
+          "displayName" : "Starter Pack",
+          "locale" : "en_GB"
+        }
+      ],
+      "productID" : "com.pawnova.credits.starter",
+      "referenceName" : "Credit Pack - Starter",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "14.99",
+      "familyShareable" : false,
+      "internalID" : "credit_pack_popular",
+      "localizations" : [
+        {
+          "description" : "2000 credits for video generation",
+          "displayName" : "Popular Pack",
+          "locale" : "en_GB"
+        }
+      ],
+      "productID" : "com.pawnova.credits.popular",
+      "referenceName" : "Credit Pack - Popular",
+      "type" : "Consumable"
+    },
+    {
+      "displayPrice" : "39.99",
+      "familyShareable" : false,
+      "internalID" : "credit_pack_pro",
+      "localizations" : [
+        {
+          "description" : "6000 credits for video generation",
+          "displayName" : "Pro Pack",
+          "locale" : "en_GB"
+        }
+      ],
+      "productID" : "com.pawnova.credits.pro",
+      "referenceName" : "Credit Pack - Pro",
+      "type" : "Consumable"
+    }
+  ],
+  "settings" : {
+    "_failTransactionsEnabled" : false,
+    "_locale" : "en_GB",
+    "_storefront" : "GBR",
+    "_storeKitErrors" : [
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Load Products"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Purchase"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Verification"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Store Sync"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Subscription Status"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "App Transaction"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Manage Subscriptions Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Refund Request Sheet"
+      },
+      {
+        "current" : null,
+        "enabled" : false,
+        "name" : "Offer Code Redeem Sheet"
+      }
+    ]
+  },
+  "subscriptionGroups" : [
+    {
+      "id" : "pawnova_pro",
+      "localizations" : [
+
+      ],
+      "name" : "PawNova Pro",
+      "subscriptions" : [
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "7.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "subscription_monthly",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Unlimited video generation, 5000 credits/month",
+              "displayName" : "Monthly",
+              "locale" : "en_GB"
+            }
+          ],
+          "productID" : "com.pawnova.subscription.monthly",
+          "recurringSubscriptionPeriod" : "P1M",
+          "referenceName" : "PawNova Pro Monthly",
+          "subscriptionGroupID" : "pawnova_pro",
+          "type" : "RecurringSubscription"
+        },
+        {
+          "adHocOffers" : [
+
+          ],
+          "codeOffers" : [
+
+          ],
+          "displayPrice" : "49.99",
+          "familyShareable" : false,
+          "groupNumber" : 1,
+          "internalID" : "subscription_annual",
+          "introductoryOffer" : null,
+          "localizations" : [
+            {
+              "description" : "Unlimited video generation, 5000 credits/month, save 48%",
+              "displayName" : "Annual",
+              "locale" : "en_GB"
+            }
+          ],
+          "productID" : "com.pawnova.subscription.annual",
+          "recurringSubscriptionPeriod" : "P1Y",
+          "referenceName" : "PawNova Pro Annual",
+          "subscriptionGroupID" : "pawnova_pro",
+          "type" : "RecurringSubscription"
+        }
+      ]
+    }
+  ],
+  "version" : {
+    "major" : 4,
+    "minor" : 0
+  }
+}

@@ -2,7 +2,8 @@
 //  Project_PawNovaUITestsLaunchTests.swift
 //  Project PawNovaUITests
 //
-//  Created by Jarryd Aubert on 04/12/2025.
+//  Launch tests for PawNova app.
+//  Captures screenshots at launch for App Store submissions.
 //
 
 import XCTest
@@ -27,6 +28,60 @@ final class Project_PawNovaUITestsLaunchTests: XCTestCase {
 
         let attachment = XCTAttachment(screenshot: app.screenshot())
         attachment.name = "Launch Screen"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+
+    @MainActor
+    func testLaunchWithSkippedOnboarding() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-skipOnboarding", "YES"]
+        app.launch()
+
+        // Wait for main app to appear
+        let createTab = app.tabBars.buttons["Create"]
+        _ = createTab.waitForExistence(timeout: 5)
+
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = "Main App - Create Tab"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+
+    @MainActor
+    func testLaunchLibraryTab() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-skipOnboarding", "YES"]
+        app.launch()
+
+        // Navigate to Library
+        let libraryTab = app.tabBars.buttons["Library"]
+        _ = libraryTab.waitForExistence(timeout: 5)
+        libraryTab.tap()
+
+        sleep(1) // Wait for animation
+
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = "Main App - Library Tab"
+        attachment.lifetime = .keepAlways
+        add(attachment)
+    }
+
+    @MainActor
+    func testLaunchSettingsTab() throws {
+        let app = XCUIApplication()
+        app.launchArguments = ["-skipOnboarding", "YES"]
+        app.launch()
+
+        // Navigate to Settings
+        let settingsTab = app.tabBars.buttons["Settings"]
+        _ = settingsTab.waitForExistence(timeout: 5)
+        settingsTab.tap()
+
+        sleep(1) // Wait for animation
+
+        let attachment = XCTAttachment(screenshot: app.screenshot())
+        attachment.name = "Main App - Settings Tab"
         attachment.lifetime = .keepAlways
         add(attachment)
     }

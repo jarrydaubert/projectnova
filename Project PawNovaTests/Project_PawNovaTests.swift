@@ -1,35 +1,88 @@
-//
-//  Project_PawNovaTests.swift
-//  Project PawNovaTests
-//
-//  Created by Jarryd Aubert on 04/12/2025.
-//
-
 import XCTest
+import SwiftData
+@testable import Project_PawNova
 
+/// Integration tests for core app workflows.
+@MainActor
 final class Project_PawNovaTests: XCTestCase {
 
+    var persistence: PersistenceController!
+
     override func setUpWithError() throws {
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        persistence = PersistenceController(inMemory: true)
     }
 
-    override func tearDownWithError() throws {
-        // Put teardown code here. This method is called after the invocation of each test method in the class.
+    // MARK: - Core Workflow Tests
+
+    func testWorkflow_CreateAndSaveVideo() throws {
+        let context = persistence.mainContext
+
+        let video = PetVideo(
+            prompt: "Cat as space explorer",
+            generatedURL: URL(string: "https://example.com/cat.mp4")
+        )
+        context.insert(video)
+        try context.save()
+
+        let descriptor = FetchDescriptor<PetVideo>()
+        let fetched = try context.fetch(descriptor)
+
+        XCTAssertEqual(fetched.count, 1)
+        XCTAssertEqual(fetched.first?.prompt, "Cat as space explorer")
+        XCTAssertTrue(fetched.first?.isGenerated ?? false)
     }
 
-    func testExample() throws {
-        // This is an example of a functional test case.
-        // Use XCTAssert and related functions to verify your tests produce the correct results.
-        // Any test you write for XCTest can be annotated as throws and async.
-        // Mark your test throws to produce an unexpected failure when your test encounters an uncaught error.
-        // Mark your test async to allow awaiting for asynchronous code to complete. Check the results with assertions afterwards.
+    func testWorkflow_DeleteVideo() throws {
+        let context = persistence.mainContext
+
+        let video = PetVideo(prompt: "Test deletion")
+        context.insert(video)
+        try context.save()
+
+        context.delete(video)
+        try context.save()
+
+        let descriptor = FetchDescriptor<PetVideo>()
+        let fetched = try context.fetch(descriptor)
+
+        XCTAssertEqual(fetched.count, 0)
     }
 
-    func testPerformanceExample() throws {
-        // This is an example of a performance test case.
-        measure {
-            // Put the code you want to measure the time of here.
-        }
+    func testWorkflow_FavoriteVideo() throws {
+        let context = persistence.mainContext
+
+        let video = PetVideo(prompt: "Favorite test")
+        context.insert(video)
+
+        XCTAssertFalse(video.isFavorite)
+        video.isFavorite = true
+        try context.save()
+
+        let descriptor = FetchDescriptor<PetVideo>()
+        let fetched = try context.fetch(descriptor)
+
+        XCTAssertTrue(fetched.first?.isFavorite ?? false)
     }
 
+    func testWorkflow_MultipleVideosSortedByDate() throws {
+        let context = persistence.mainContext
+
+        let videos = [
+            PetVideo(prompt: "Old", timestamp: Date(timeIntervalSinceNow: -3600)),
+            PetVideo(prompt: "Newest", timestamp: Date()),
+            PetVideo(prompt: "Middle", timestamp: Date(timeIntervalSinceNow: -1800))
+        ]
+
+        videos.forEach { context.insert($0) }
+        try context.save()
+
+        let descriptor = FetchDescriptor<PetVideo>(
+            sortBy: [SortDescriptor(\.timestamp, order: .reverse)]
+        )
+        let sorted = try context.fetch(descriptor)
+
+        XCTAssertEqual(sorted[0].prompt, "Newest")
+        XCTAssertEqual(sorted[1].prompt, "Middle")
+        XCTAssertEqual(sorted[2].prompt, "Old")
+    }
 }

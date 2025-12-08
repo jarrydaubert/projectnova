@@ -63,8 +63,9 @@ struct VideoDetailView: View {
                     }
                 }
 
-                HStack {
+                HStack(spacing: 24) {
                     Spacer()
+
                     Button {
                         if isPlaying {
                             player?.pause()
@@ -74,17 +75,30 @@ struct VideoDetailView: View {
                             isPlaying = true
                         }
                     } label: {
-                        Image(systemName: isPlaying ? "pause.circle.fill" : "play.circle.fill")
-                            .font(.title2)
-                            .foregroundStyle(.tint)
+                        VStack(spacing: 4) {
+                            Image(systemName: isPlaying ? "pause.circle.fill" : "play.circle.fill")
+                                .font(.title2)
+                            Text(isPlaying ? "Pause" : "Play")
+                                .font(.caption2)
+                        }
+                        .foregroundStyle(.tint)
                     }
-                    Spacer()
+
+                    if let url = video.generatedURL {
+                        SaveToPhotosButton(videoURL: url, style: .compact)
+                    }
 
                     ShareLink(item: video.generatedURL ?? URL(string: "https://placeholder.com")!) {
-                        Image(systemName: "square.and.arrow.up")
-                            .font(.title2)
-                            .foregroundStyle(.tint)
+                        VStack(spacing: 4) {
+                            Image(systemName: "square.and.arrow.up")
+                                .font(.title2)
+                            Text("Share")
+                                .font(.caption2)
+                        }
+                        .foregroundStyle(.tint)
                     }
+
+                    Spacer()
                 }
             }
             .padding()

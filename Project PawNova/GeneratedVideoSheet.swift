@@ -42,8 +42,8 @@ struct GeneratedVideoSheet: View {
                     .padding(.horizontal)
                     .padding(.top, 12)
 
-                    // Action buttons
-                    HStack(spacing: 16) {
+                    // Action buttons - Row 1
+                    HStack(spacing: 12) {
                         // Discard button
                         Button {
                             Haptic.warning()
@@ -78,16 +78,23 @@ struct GeneratedVideoSheet: View {
                             .background(Color.pawAccent)
                             .clipShape(RoundedRectangle(cornerRadius: 12))
                         }
+                    }
+                    .padding(.horizontal)
 
-                        // Save button
+                    // Action buttons - Row 2
+                    HStack(spacing: 12) {
+                        // Save to Photos button
+                        SaveToPhotosButton(videoURL: videoURL, style: .full)
+
+                        // Save to Library button
                         Button {
                             Haptic.success()
                             onSave()
                             dismiss()
                         } label: {
                             HStack {
-                                Image(systemName: "square.and.arrow.down")
-                                Text("Save")
+                                Image(systemName: "folder.badge.plus")
+                                Text("Save to Library")
                             }
                             .font(.subheadline.bold())
                             .foregroundColor(.white)

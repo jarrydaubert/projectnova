@@ -188,7 +188,7 @@ struct SettingsView: View {
                     // Support Section
                     Section {
                         NavigationLink {
-                            Text("Help Center")
+                            FAQView()
                         } label: {
                             Label("Help Center", systemImage: "questionmark.circle")
                                 .foregroundColor(.pawTextPrimary)
@@ -206,14 +206,14 @@ struct SettingsView: View {
                         }
 
                         NavigationLink {
-                            Text("Privacy Policy")
+                            PrivacyPolicyView()
                         } label: {
                             Label("Privacy Policy", systemImage: "hand.raised")
                                 .foregroundColor(.pawTextPrimary)
                         }
 
                         NavigationLink {
-                            Text("Terms of Service")
+                            TermsOfServiceView()
                         } label: {
                             Label("Terms of Service", systemImage: "doc.text")
                                 .foregroundColor(.pawTextPrimary)

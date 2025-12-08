@@ -65,6 +65,7 @@ struct ContentView: View {
     @State private var showPaywall = false
     @State private var showInsufficientCredits = false
     @State private var showConfirmGeneration = false
+    @State private var showGuidelines = false
 
     var body: some View {
         ZStack {
@@ -156,6 +157,11 @@ struct ContentView: View {
                 )
             }
         }
+        // Guidelines sheet
+        .sheet(isPresented: $showGuidelines) {
+            GuidelinesView()
+                .presentationDetents([.large])
+        }
     }
 
     // MARK: - Header View
@@ -172,6 +178,16 @@ struct ContentView: View {
                     .foregroundStyle(LinearGradient.pawPrimary)
 
                 Spacer()
+
+                // Info button
+                Button {
+                    Haptic.light()
+                    showGuidelines = true
+                } label: {
+                    Image(systemName: "questionmark.circle")
+                        .font(.title2)
+                        .foregroundColor(.pawTextSecondary)
+                }
 
                 // Credits display
                 HStack(spacing: 4) {

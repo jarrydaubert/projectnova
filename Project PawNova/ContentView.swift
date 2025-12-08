@@ -40,6 +40,7 @@ struct ContentView: View {
     @State private var showError = false
     @State private var generatedVideoURL: URL?
     @State private var currentPrompt: String?
+    @State private var showGeneratedVideo = false
 
     // Photo picker states
     @State private var inputMode: InputMode = .text
@@ -97,11 +98,9 @@ struct ContentView: View {
                     // Generate Button
                     generateButton
 
-                    // Preview/Result Area
+                    // Loading indicator
                     if isGenerating {
                         loadingView
-                    } else if let videoURL = generatedVideoURL {
-                        resultView(videoURL: videoURL)
                     }
 
                     // History Section
@@ -141,6 +140,21 @@ struct ContentView: View {
         // Paywall sheet for non-subscribers
         .sheet(isPresented: $showPaywall) {
             PaywallSheetView(isSubscribed: $isSubscribed)
+        }
+        // Full-screen generated video presentation
+        .fullScreenCover(isPresented: $showGeneratedVideo) {
+            if let videoURL = generatedVideoURL, let prompt = currentPrompt {
+                GeneratedVideoSheet(
+                    videoURL: videoURL,
+                    prompt: prompt,
+                    onSave: {
+                        saveToHistory()
+                    },
+                    onDiscard: {
+                        discardGeneration()
+                    }
+                )
+            }
         }
     }
 
@@ -614,72 +628,6 @@ struct ContentView: View {
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
 
-    // MARK: - Result View
-
-    private func resultView(videoURL: URL) -> some View {
-        VStack(spacing: 16) {
-            // Prompt used
-            VStack(alignment: .leading, spacing: 8) {
-                HStack {
-                    Image(systemName: "sparkles")
-                        .foregroundColor(.pawAccent)
-                    Text("Generated Prompt")
-                        .font(.subheadline.bold())
-                        .foregroundColor(.pawTextPrimary)
-                }
-
-                Text(currentPrompt ?? "")
-                    .font(.caption)
-                    .foregroundColor(.pawTextSecondary)
-                    .padding()
-                    .frame(maxWidth: .infinity, alignment: .leading)
-                    .background(Color.pawBackground)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-            }
-            .padding()
-            .background(Color.pawCard)
-            .clipShape(RoundedRectangle(cornerRadius: 16))
-
-            // Video Player
-            VideoPlayer(player: AVPlayer(url: videoURL))
-                .frame(height: 300)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
-                .overlay(
-                    RoundedRectangle(cornerRadius: 16)
-                        .stroke(LinearGradient.pawPrimary, lineWidth: 2)
-                )
-
-            HStack(spacing: 12) {
-                Button {
-                    generatedVideoURL = nil
-                    currentPrompt = nil
-                    promptText = ""
-                    selectedPhotoImage = nil
-                } label: {
-                    Text("Create Another")
-                        .font(.subheadline.bold())
-                        .foregroundColor(.pawPrimary)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(Color.pawCard)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                }
-
-                Button {
-                    saveToHistory()
-                } label: {
-                    Text("Save to History")
-                        .font(.subheadline.bold())
-                        .foregroundColor(.white)
-                        .frame(maxWidth: .infinity)
-                        .padding()
-                        .background(LinearGradient.pawPrimary)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                }
-            }
-        }
-    }
-
     // MARK: - History Section
 
     private var historySection: some View {
@@ -772,6 +720,8 @@ struct ContentView: View {
                 currentPrompt = finalPrompt  // Save enhanced prompt
                 isGenerating = false
                 Haptic.success()
+                // Present full-screen video sheet
+                showGeneratedVideo = true
             }
         } catch {
             await MainActor.run {
@@ -793,6 +743,15 @@ struct ContentView: View {
         try? modelContext.save()
 
         // Clear after saving
+        clearGenerationState()
+    }
+
+    private func discardGeneration() {
+        // Clear without saving
+        clearGenerationState()
+    }
+
+    private func clearGenerationState() {
         generatedVideoURL = nil
         currentPrompt = nil
         promptText = ""

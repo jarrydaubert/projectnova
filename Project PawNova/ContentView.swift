@@ -2,6 +2,7 @@ import SwiftUI
 import SwiftData
 import PhotosUI
 import AVKit
+import TipKit
 
 enum InputMode {
     case text
@@ -66,6 +67,11 @@ struct ContentView: View {
     @State private var showInsufficientCredits = false
     @State private var showConfirmGeneration = false
     @State private var showGuidelines = false
+
+    // Tips
+    private let promptTip = PromptTip()
+    private let modelTip = ModelSelectionTip()
+    private let creditTip = CreditTip()
 
     var body: some View {
         ZStack {
@@ -289,6 +295,9 @@ struct ContentView: View {
                 .font(.caption2)
                 .foregroundColor(.pawTextSecondary)
                 .frame(maxWidth: .infinity, alignment: .trailing)
+
+            // Tip for writing better prompts
+            TipView(promptTip)
         }
         .padding()
         .background(Color.pawCard)

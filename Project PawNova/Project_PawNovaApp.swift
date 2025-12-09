@@ -7,12 +7,14 @@
 
 import SwiftUI
 import SwiftData
+import TipKit
 
 @main
 struct Project_PawNovaApp: App {
     private let persistence = PersistenceController.shared
     @State private var onboardingManager: OnboardingManager
     @State private var storeService = StoreService.shared
+    @State private var networkMonitor = NetworkMonitor.shared
 
     init() {
         let manager = OnboardingManager()
@@ -28,6 +30,15 @@ struct Project_PawNovaApp: App {
         #endif
 
         _onboardingManager = State(initialValue: manager)
+
+        // Configure TipKit
+        TipConfiguration.configure()
+
+        // Migrate sensitive data from UserDefaults to Keychain (one-time)
+        SecureStorageMigration.migrateFromUserDefaults()
+
+        // Log app launch
+        DiagnosticsService.shared.info("App launched", category: "Lifecycle")
     }
 
     var body: some Scene {
@@ -45,17 +56,23 @@ struct RootView: View {
     @Environment(OnboardingManager.self) private var onboarding
 
     var body: some View {
-        Group {
-            if onboarding.hasCompletedOnboarding || onboarding.currentStep == .complete {
-                MainTabView()
-                    .transition(.opacity)
-            } else {
-                OnboardingContainerView()
-                    .transition(.opacity)
+        ZStack(alignment: .top) {
+            Group {
+                if onboarding.hasCompletedOnboarding || onboarding.currentStep == .complete {
+                    MainTabView()
+                        .transition(.opacity)
+                } else {
+                    OnboardingContainerView()
+                        .transition(.opacity)
+                }
             }
+            .animation(.easeInOut(duration: 0.3), value: onboarding.hasCompletedOnboarding)
+            .animation(.easeInOut(duration: 0.3), value: onboarding.currentStep)
+
+            // Offline banner at top
+            OfflineBanner()
+                .animation(.easeInOut, value: NetworkMonitor.shared.isConnected)
         }
-        .animation(.easeInOut(duration: 0.3), value: onboarding.hasCompletedOnboarding)
-        .animation(.easeInOut(duration: 0.3), value: onboarding.currentStep)
         .preferredColorScheme(.dark)
     }
 }

@@ -27,6 +27,7 @@
 		AE95F73B2EE1F23C000822C0 /* Project PawNova.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Project PawNova.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE95F74A2EE1F23D000822C0 /* Project PawNovaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Project PawNovaTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE95F7542EE1F23D000822C0 /* Project PawNovaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Project PawNovaUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
+		AED1541D2EE77A4D0000A398 /* Project PawNova.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Project PawNova.xctestplan"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +76,7 @@
 		AE95F7322EE1F23C000822C0 = {
 			isa = PBXGroup;
 			children = (
+				AED1541D2EE77A4D0000A398 /* Project PawNova.xctestplan */,
 				AE95F73D2EE1F23C000822C0 /* Project PawNova */,
 				AE95F74D2EE1F23D000822C0 /* Project PawNovaTests */,
 				AE95F7572EE1F23D000822C0 /* Project PawNovaUITests */,

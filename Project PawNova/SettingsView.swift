@@ -248,6 +248,20 @@ struct SettingsView: View {
                     }
                     .listRowBackground(Color.pawCard)
 
+                    // Diagnostics Section
+                    Section {
+                        NavigationLink {
+                            DiagnosticsView()
+                        } label: {
+                            Label("Diagnostics", systemImage: "stethoscope")
+                                .foregroundColor(.pawTextPrimary)
+                        }
+                    } header: {
+                        Text("Troubleshooting")
+                            .foregroundColor(.pawTextSecondary)
+                    }
+                    .listRowBackground(Color.pawCard)
+
                     // Developer Options (DEBUG only)
                     #if DEBUG
                     Section {
@@ -255,6 +269,14 @@ struct SettingsView: View {
                             showResetOnboardingAlert = true
                         } label: {
                             Label("Reset Onboarding", systemImage: "arrow.counterclockwise")
+                                .foregroundColor(.pawPrimary)
+                        }
+
+                        Button {
+                            TipConfiguration.resetAllTips()
+                            Haptic.success()
+                        } label: {
+                            Label("Reset Tips", systemImage: "lightbulb")
                                 .foregroundColor(.pawPrimary)
                         }
                     } header: {

@@ -1,0 +1,48 @@
+{
+  "configurations" : [
+    {
+      "id" : "081B1445-211A-465F-B184-092A205F4E22",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "environmentVariableEntries" : [
+      {
+        "key" : "FAL_KEY",
+        "value" : "e74529a9-cf5d-4863-88e7-926939f60aa6:172850f3313ea3f3347b8ea47d63827a"
+      },
+      {
+        "key" : "OS_ACTIVITY_MODE",
+        "value" : "disable"
+      }
+    ],
+    "performanceAntipatternCheckerEnabled" : true,
+    "targetForVariableExpansion" : {
+      "containerPath" : "container:Project PawNova.xcodeproj",
+      "identifier" : "AE95F73A2EE1F23C000822C0",
+      "name" : "Project PawNova"
+    }
+  },
+  "testTargets" : [
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Project PawNova.xcodeproj",
+        "identifier" : "AE95F7492EE1F23D000822C0",
+        "name" : "Project PawNovaTests"
+      }
+    },
+    {
+      "parallelizable" : true,
+      "target" : {
+        "containerPath" : "container:Project PawNova.xcodeproj",
+        "identifier" : "AE95F7532EE1F23D000822C0",
+        "name" : "Project PawNovaUITests"
+      }
+    }
+  ],
+  "version" : 1
+}

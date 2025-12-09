@@ -45,6 +45,12 @@ enum SubscriptionPlan: String, CaseIterable, Identifiable {
 
 struct PaywallView: View {
     @Environment(OnboardingManager.self) private var onboarding
+    @Environment(\.dismiss) private var dismiss
+
+    /// If true, shows X button to dismiss (for sheet presentation outside onboarding)
+    var showDismissButton: Bool = false
+    /// Optional callback when dismissed without subscribing
+    var onDismiss: (() -> Void)?
 
     @State private var selectedPlan: SubscriptionPlan = .yearly
     @State private var isLoading = false
@@ -63,6 +69,23 @@ struct PaywallView: View {
             auroraBackground
 
             VStack(spacing: 0) {
+                // Dismiss button (when shown as sheet)
+                if showDismissButton {
+                    HStack {
+                        Spacer()
+                        Button {
+                            Haptic.light()
+                            onDismiss?()
+                            dismiss()
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .font(.title2)
+                                .foregroundColor(.pawTextSecondary)
+                        }
+                        .padding()
+                    }
+                }
+
                 // Header
                 VStack(spacing: 16) {
                     // Icon
@@ -84,7 +107,7 @@ struct PaywallView: View {
                         .font(.subheadline)
                         .foregroundColor(.pawTextSecondary)
                 }
-                .padding(.top, 40)
+                .padding(.top, showDismissButton ? 0 : 40)
                 .padding(.bottom, 24)
 
                 // Features

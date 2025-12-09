@@ -12,25 +12,25 @@ import SwiftUI
 
 /// Defines the available tabs in the app.
 enum AppTab: Int, CaseIterable, Identifiable {
-    case create = 0
-    case library = 1
+    case projects = 0
+    case create = 1
     case settings = 2
 
     var id: Int { rawValue }
 
     var title: String {
         switch self {
+        case .projects: return "Projects"
         case .create: return "Create"
-        case .library: return "Library"
         case .settings: return "Settings"
         }
     }
 
     var icon: String {
         switch self {
-        case .create: return "plus.circle.fill"
-        case .library: return "film.stack"
-        case .settings: return "gear"
+        case .projects: return "video.fill"
+        case .create: return "wand.and.stars"
+        case .settings: return "person.fill"
         }
     }
 }
@@ -41,22 +41,22 @@ enum AppTab: Int, CaseIterable, Identifiable {
 /// Use `@Observable` (iOS 17+) for cleaner, more efficient observation.
 @Observable
 final class TabRouter {
-    /// The currently selected tab.
-    var selectedTab: AppTab = .create
+    /// The currently selected tab (Projects is default/home).
+    var selectedTab: AppTab = .projects
 
     /// Switches to the specified tab.
     func navigate(to tab: AppTab) {
         selectedTab = tab
     }
 
+    /// Switches to the Projects tab.
+    func goToProjects() {
+        selectedTab = .projects
+    }
+
     /// Switches to the Create tab.
     func goToCreate() {
         selectedTab = .create
-    }
-
-    /// Switches to the Library tab.
-    func goToLibrary() {
-        selectedTab = .library
     }
 
     /// Switches to the Settings tab.

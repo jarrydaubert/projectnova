@@ -197,18 +197,23 @@ struct ContentView: View {
                         .foregroundColor(.pawTextSecondary)
                 }
 
-                // Credits display
-                HStack(spacing: 4) {
-                    Image(systemName: "sparkles")
-                        .foregroundColor(.pawPrimary)
-                    Text("\(userCredits)")
-                        .font(.headline.bold())
-                        .foregroundColor(.pawTextPrimary)
+                // Credits display (tappable to show paywall)
+                Button {
+                    Haptic.light()
+                    showPaywall = true
+                } label: {
+                    HStack(spacing: 4) {
+                        Image(systemName: "sparkles")
+                            .foregroundColor(.pawPrimary)
+                        Text("\(userCredits)")
+                            .font(.headline.bold())
+                            .foregroundColor(.pawTextPrimary)
+                    }
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(Color.pawCard)
+                    .clipShape(Capsule())
                 }
-                .padding(.horizontal, 12)
-                .padding(.vertical, 6)
-                .background(Color.pawCard)
-                .clipShape(Capsule())
             }
 
             Text("Bring your pet's adventure to life")

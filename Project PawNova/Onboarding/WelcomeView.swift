@@ -27,16 +27,12 @@ struct WelcomeView: View {
 
                 // Hero content
                 VStack(spacing: 16) {
-                    // Icon
-                    ZStack {
-                        Circle()
-                            .fill(LinearGradient.pawPrimary)
-                            .frame(width: 80, height: 80)
-
-                        Image(systemName: "sparkles")
-                            .font(.system(size: 36, weight: .semibold))
-                            .foregroundColor(.white)
-                    }
+                    // App logo
+                    Image("Logo")
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 100, height: 100)
+                        .clipShape(RoundedRectangle(cornerRadius: 22))
 
                     Text("Create Magic")
                         .font(.system(size: 32, weight: .bold, design: .rounded))

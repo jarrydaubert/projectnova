@@ -8,19 +8,19 @@ struct MainTabView: View {
 
     var body: some View {
         TabView(selection: $router.selectedTab) {
+            // Projects Tab (Home/Landing)
+            ProjectsView()
+                .tabItem {
+                    Label(AppTab.projects.title, systemImage: AppTab.projects.icon)
+                }
+                .tag(AppTab.projects)
+
             // Create Tab
             ContentView()
                 .tabItem {
                     Label(AppTab.create.title, systemImage: AppTab.create.icon)
                 }
                 .tag(AppTab.create)
-
-            // Library Tab
-            LibraryView()
-                .tabItem {
-                    Label(AppTab.library.title, systemImage: AppTab.library.icon)
-                }
-                .tag(AppTab.library)
 
             // Settings Tab
             SettingsView()

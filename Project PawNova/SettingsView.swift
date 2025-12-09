@@ -13,6 +13,7 @@ struct SettingsView: View {
     @State private var showDeleteAccountAlert = false
     @State private var notificationsEnabled = false
     @State private var notificationStatus: UNAuthorizationStatus = .notDetermined
+    @State private var showPaywall = false
 
     var body: some View {
         NavigationStack {
@@ -88,27 +89,33 @@ struct SettingsView: View {
 
                     // Subscription Section
                     Section {
-                        HStack {
-                            VStack(alignment: .leading, spacing: 4) {
-                                Text("PawNova Pro")
-                                    .font(.headline)
-                                    .foregroundColor(.pawTextPrimary)
-                                Text("Unlimited videos, HD export")
-                                    .font(.caption)
-                                    .foregroundColor(.pawTextSecondary)
+                        Button {
+                            Haptic.light()
+                            showPaywall = true
+                        } label: {
+                            HStack {
+                                VStack(alignment: .leading, spacing: 4) {
+                                    Text("PawNova Pro")
+                                        .font(.headline)
+                                        .foregroundColor(.pawTextPrimary)
+                                    Text("Unlimited videos, HD export")
+                                        .font(.caption)
+                                        .foregroundColor(.pawTextSecondary)
+                                }
+
+                                Spacer()
+
+                                Text("Upgrade")
+                                    .font(.subheadline.bold())
+                                    .foregroundColor(.white)
+                                    .padding(.horizontal, 16)
+                                    .padding(.vertical, 8)
+                                    .background(LinearGradient.pawPrimary)
+                                    .clipShape(Capsule())
                             }
-
-                            Spacer()
-
-                            Text("Upgrade")
-                                .font(.subheadline.bold())
-                                .foregroundColor(.white)
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 8)
-                                .background(LinearGradient.pawPrimary)
-                                .clipShape(Capsule())
+                            .padding(.vertical, 4)
                         }
-                        .padding(.vertical, 4)
+                        .buttonStyle(.plain)
                     } header: {
                         Text("Subscription")
                             .foregroundColor(.pawTextSecondary)
@@ -346,6 +353,9 @@ struct SettingsView: View {
             }
             .onReceive(NotificationCenter.default.publisher(for: UIApplication.willEnterForegroundNotification)) { _ in
                 checkNotificationStatus()
+            }
+            .sheet(isPresented: $showPaywall) {
+                PaywallView(showDismissButton: true)
             }
         }
     }

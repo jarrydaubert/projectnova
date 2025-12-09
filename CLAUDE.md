@@ -2,17 +2,19 @@
 
 ## Project Overview
 
-PawNova is an iOS 17+ app that generates AI pet videos using fal.ai (Google Veo 3, OpenAI Sora 2). Three-tab navigation: Create, Library, Settings. Demo mode enabled by default for free testing.
+PawNova is an iOS 18+ app that generates AI pet videos using fal.ai. Supports 4 AI models: Veo 3 Fast, Veo 3 Pro (Google), Kling 2.5 (Kuaishou), Hailuo-02 (MiniMax). Three-tab navigation: Create, Library, Settings. Demo mode enabled by default for free testing.
 
 ## Tech Stack
 
 - **SwiftUI** - Declarative UI
 - **SwiftData** - Persistence (@Model, @Query)
+- **StoreKit 2** - Subscriptions & credit packs
+- **TipKit** - Contextual tips
 - **async/await** - Concurrency
 - **AVKit** - Video playback
 - **os.Logger** - Logging (not print)
-- **@Observable** - iOS 17 state management
-- Zero third-party dependencies
+- **@Observable** - iOS 17+ state management
+- Zero third-party dependencies (Firebase optional)
 
 ## Brand Colors (Aurora Theme)
 
@@ -57,14 +59,17 @@ Project_PawNovaApp
 ```
 
 **Key Files:**
-- `FalService.swift` - API client (@MainActor, injectable URLSession)
+- `FalService.swift` - API client (@MainActor, 4 AI models)
 - `PetVideo.swift` - SwiftData model
 - `PersistenceController.swift` - SwiftData container
 - `TabRouter.swift` - @Observable tab navigation
-- `HapticUtility.swift` - Haptic feedback
-- `PawNovaColors.swift` - Aurora color palette
-- `OnboardingManager.swift` - @Observable onboarding state
-- `Onboarding/` - 4 onboarding views
+- `ErrorHandling.swift` - PawNovaError, NetworkMonitor, retry logic
+- `SecureStorage.swift` - Keychain storage for credits/subscription
+- `GenerationProgress.swift` - AsyncSequence real-time progress
+- `DiagnosticsService.swift` - Logging and diagnostic export
+- `Tips.swift` - TipKit contextual tips
+- `Store/StoreService.swift` - StoreKit 2 purchases
+- `Onboarding/` - Splash, Welcome, PetName, Notifications, Paywall
 
 ## Patterns
 
@@ -148,12 +153,27 @@ In DEBUG builds only:
 - **WelcomeView**: "Skip (Dev Mode)" link bypasses auth
 - **SettingsView**: "Reset Onboarding" in Developer section
 
+## AI Models
+
+| Model | Provider | Duration | Credits | Audio |
+|-------|----------|----------|---------|-------|
+| Veo 3 Fast | Google | 8s | 800 | Yes |
+| Veo 3 Pro | Google | 8s | 2000 | Yes |
+| Kling 2.5 | Kuaishou | 5s | 600 | No |
+| Hailuo-02 | MiniMax | 6s | 500 | No |
+
 ## Constraints
 
-- iOS 17+ required (SwiftData, @Observable)
+- iOS 18+ required (SwiftData, @Observable, TipKit)
 - Demo mode = true by default
 - Use os.Logger, not print()
 - @MainActor for services
 - Onboarding completes before MainTabView shows
 - AuthenticationServices for Sign in with Apple
 - Simulator console noise (haptics, audio) is expected
+
+## Documentation
+
+- `FIREBASE_SETUP.md` - Crashlytics & Analytics setup
+- `GO_LIVE_CHECKLIST.md` - App Store submission checklist
+- `ROADMAP.md` - Feature roadmap

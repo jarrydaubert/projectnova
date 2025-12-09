@@ -42,6 +42,8 @@ struct ContentView: View {
     @State private var generatedVideoURL: URL?
     @State private var currentPrompt: String?
     @State private var showGeneratedVideo = false
+    @State private var generationStatus: GenerationStatus = .idle
+    @State private var generationTask: Task<Void, Never>?
 
     // Photo picker states
     @State private var inputMode: InputMode = .text
@@ -633,22 +635,20 @@ struct ContentView: View {
 
     private var loadingView: some View {
         VStack(spacing: 16) {
-            ProgressView()
-                .scaleEffect(1.5)
-                .tint(.pawPrimary)
+            // Use the new progress view
+            GenerationProgressView(status: generationStatus)
 
-            VStack(spacing: 8) {
-                Text("Creating Your Pet's Adventure")
-                    .font(.headline)
-                    .foregroundColor(.pawTextPrimary)
-
-                Text("This may take up to 30 seconds")
-                    .font(.caption)
+            // Cancel button
+            Button {
+                cancelGeneration()
+            } label: {
+                Text("Cancel")
+                    .font(.subheadline)
                     .foregroundColor(.pawTextSecondary)
             }
         }
         .frame(maxWidth: .infinity)
-        .padding(.vertical, 40)
+        .padding()
         .background(Color.pawCard)
         .clipShape(RoundedRectangle(cornerRadius: 16))
     }
@@ -719,7 +719,14 @@ struct ContentView: View {
         userCredits -= creditCost
 
         isGenerating = true
+        generationStatus = .idle
         errorMessage = nil
+
+        // Log generation start
+        DiagnosticsService.shared.info(
+            "Starting generation: model=\(selectedModel.rawValue), credits=\(creditCost)",
+            category: "Generation"
+        )
 
         do {
             // TODO: Upload photo if in photo mode
@@ -733,20 +740,47 @@ struct ContentView: View {
             // Convert aspect ratio to API format
             let aspectRatioString = selectedAspectRatio.rawValue
 
-            let videoUrl = try await FalService.shared.generateVideo(
+            // Use AsyncThrowingStream for progress updates
+            let progressStream = GenerationProgressManager.shared.generateWithProgress(
                 prompt: finalPrompt,
                 model: selectedModel,
                 aspectRatio: aspectRatioString,
                 imageUrl: imageUrl
             )
 
+            var videoUrl: String?
+
+            for try await status in progressStream {
+                await MainActor.run {
+                    generationStatus = status
+                }
+
+                // Capture completed URL
+                if case .completed(let url) = status {
+                    videoUrl = url
+                }
+            }
+
+            guard let finalVideoUrl = videoUrl else {
+                throw FalServiceError.noVideoGenerated
+            }
+
             await MainActor.run {
-                generatedVideoURL = URL(string: videoUrl)
-                currentPrompt = finalPrompt  // Save enhanced prompt
+                generatedVideoURL = URL(string: finalVideoUrl)
+                currentPrompt = finalPrompt
                 isGenerating = false
+                generationStatus = .idle
                 Haptic.success()
-                // Present full-screen video sheet
                 showGeneratedVideo = true
+
+                // Update tip state
+                TipConfiguration.updateTipState(
+                    videoCount: videos.count + 1,
+                    credits: userCredits,
+                    hasGeneratedVideo: true
+                )
+
+                DiagnosticsService.shared.info("Generation completed successfully", category: "Generation")
             }
         } catch {
             await MainActor.run {
@@ -755,8 +789,27 @@ struct ContentView: View {
                 errorMessage = error.localizedDescription
                 showError = true
                 isGenerating = false
+                generationStatus = .idle
+
+                DiagnosticsService.shared.error(
+                    "Generation failed: \(error.localizedDescription)",
+                    category: "Generation"
+                )
             }
         }
+    }
+
+    private func cancelGeneration() {
+        generationTask?.cancel()
+        GenerationProgressManager.shared.cancel()
+        isGenerating = false
+        generationStatus = .idle
+
+        // Refund credits
+        userCredits += selectedModel.credits
+
+        Haptic.warning()
+        DiagnosticsService.shared.info("Generation cancelled by user", category: "Generation")
     }
 
     private func saveToHistory() {

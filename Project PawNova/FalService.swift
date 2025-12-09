@@ -510,7 +510,7 @@ final class FalService {
 
     /// Returns a mock video URL for demo mode using Apple's sample HLS streams.
     /// These are publicly available test videos that work reliably in AVPlayer.
-    private func mockVideoURL(for prompt: String) -> String {
+    func mockVideoURL(for prompt: String) -> String {
         // Apple's sample HLS streams - these actually work in AVPlayer
         // See: https://developer.apple.com/streaming/examples/
         let lowerPrompt = prompt.lowercased()

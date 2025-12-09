@@ -215,15 +215,17 @@ final class StoreService {
                     let transaction = try Self.checkVerified(result)
 
                     // Update UI on main actor
-                    await MainActor.run {
+                    await MainActor.run { [weak self] in
+                        guard let self else { return }
                         Task {
-                            await self?.updateSubscriptionStatus()
+                            await self.updateSubscriptionStatus()
                         }
                     }
 
                     await transaction.finish()
                 } catch {
-                    logger.error("❌ Transaction verification failed: \(error)")
+                    // Log error (using print for detached task safety)
+                    print("❌ Transaction verification failed: \(error)")
                 }
             }
         }

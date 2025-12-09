@@ -144,9 +144,10 @@ class NetworkMonitor {
 
     private func startMonitoring() {
         monitor.pathUpdateHandler = { [weak self] path in
-            Task { @MainActor in
-                self?.isConnected = path.status == .satisfied
-                self?.connectionType = self?.getConnectionType(path) ?? .unknown
+            Task { @MainActor [weak self] in
+                guard let self else { return }
+                self.isConnected = path.status == .satisfied
+                self.connectionType = self.getConnectionType(path)
             }
         }
         monitor.start(queue: queue)
@@ -212,7 +213,7 @@ class ErrorLogger {
 
 // MARK: - Retry Logic
 
-struct RetryConfig {
+struct RetryConfig: Sendable {
     let maxAttempts: Int
     let initialDelay: TimeInterval
     let maxDelay: TimeInterval
@@ -234,13 +235,19 @@ struct RetryConfig {
 }
 
 func withRetry<T>(
-    config: RetryConfig = .default,
+    config: RetryConfig? = nil,
     operation: @escaping () async throws -> T
 ) async throws -> T {
+    let resolvedConfig = config ?? RetryConfig(
+        maxAttempts: 3,
+        initialDelay: 1.0,
+        maxDelay: 10.0,
+        multiplier: 2.0
+    )
     var lastError: Error?
-    var delay = config.initialDelay
+    var delay = resolvedConfig.initialDelay
 
-    for attempt in 1...config.maxAttempts {
+    for attempt in 1...resolvedConfig.maxAttempts {
         do {
             return try await operation()
         } catch {
@@ -252,7 +259,7 @@ func withRetry<T>(
             }
 
             // Don't retry on last attempt
-            if attempt == config.maxAttempts {
+            if attempt == resolvedConfig.maxAttempts {
                 break
             }
 
@@ -262,7 +269,7 @@ func withRetry<T>(
             )
 
             try await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
-            delay = min(delay * config.multiplier, config.maxDelay)
+            delay = min(delay * resolvedConfig.multiplier, resolvedConfig.maxDelay)
         }
     }
 

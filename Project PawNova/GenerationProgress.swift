@@ -84,10 +84,10 @@ final class GenerationProgressManager {
         imageUrl: String? = nil
     ) -> AsyncThrowingStream<GenerationStatus, Error> {
         return AsyncThrowingStream { continuation in
-            Task {
+            Task { @MainActor in
                 do {
                     // Update status: Submitting
-                    await self.updateStatus(.submitting)
+                    self.updateStatus(.submitting)
                     continuation.yield(.submitting)
 
                     // Check network
@@ -116,13 +116,13 @@ final class GenerationProgressManager {
                     )
 
                     // Update status: Completed
-                    await self.updateStatus(.completed(videoURL: videoURL))
+                    self.updateStatus(.completed(videoURL: videoURL))
                     continuation.yield(.completed(videoURL: videoURL))
                     continuation.finish()
 
                 } catch {
                     let errorMessage = error.localizedDescription
-                    await self.updateStatus(.failed(error: errorMessage))
+                    self.updateStatus(.failed(error: errorMessage))
                     continuation.yield(.failed(error: errorMessage))
                     continuation.finish(throwing: error)
                 }
@@ -140,11 +140,11 @@ final class GenerationProgressManager {
         continuation: AsyncThrowingStream<GenerationStatus, Error>.Continuation
     ) async throws {
         // Simulate queued
-        await updateStatus(.queued(position: 2))
+        updateStatus(.queued(position: 2))
         continuation.yield(.queued(position: 2))
         try await Task.sleep(nanoseconds: 500_000_000)
 
-        await updateStatus(.queued(position: 1))
+        updateStatus(.queued(position: 1))
         continuation.yield(.queued(position: 1))
         try await Task.sleep(nanoseconds: 500_000_000)
 
@@ -160,19 +160,19 @@ final class GenerationProgressManager {
         ]
 
         for (progress, stage) in stages {
-            await updateStatus(.processing(progress: progress, stage: stage))
+            updateStatus(.processing(progress: progress, stage: stage))
             continuation.yield(.processing(progress: progress, stage: stage))
             try await Task.sleep(nanoseconds: 400_000_000)
         }
 
         // Simulate download
-        await updateStatus(.downloading)
+        updateStatus(.downloading)
         continuation.yield(.downloading)
         try await Task.sleep(nanoseconds: 300_000_000)
 
         // Complete with mock URL
         let mockURL = FalService.shared.mockVideoURL(for: "demo")
-        await updateStatus(.completed(videoURL: mockURL))
+        updateStatus(.completed(videoURL: mockURL))
         continuation.yield(.completed(videoURL: mockURL))
         continuation.finish()
     }
@@ -185,7 +185,7 @@ final class GenerationProgressManager {
         continuation: AsyncThrowingStream<GenerationStatus, Error>.Continuation
     ) async throws -> String {
         // Submit job
-        await updateStatus(.queued(position: nil))
+        updateStatus(.queued(position: nil))
         continuation.yield(.queued(position: nil))
 
         // Use the existing FalService but poll for status

@@ -8,6 +8,7 @@
 import SwiftUI
 import Network
 import os.log
+import FirebaseCrashlytics
 
 // MARK: - App-Wide Error Types
 
@@ -186,7 +187,10 @@ class ErrorLogger {
             logger.error("\(contextStr)Error: \(error.localizedDescription)")
         }
 
-        // In production, send to crash reporting service (Firebase Crashlytics, Sentry, etc.)
+        // Send to Firebase Crashlytics
+        Crashlytics.crashlytics().log("\(contextStr)\(error.localizedDescription)")
+        Crashlytics.crashlytics().record(error: error)
+
         #if DEBUG
         print("🔴 Error logged: \(contextStr)\(error.localizedDescription)")
         #endif
@@ -195,6 +199,9 @@ class ErrorLogger {
     func logWarning(_ message: String, context: String? = nil) {
         let contextStr = context.map { "[\($0)] " } ?? ""
         logger.warning("\(contextStr)\(message)")
+
+        // Send to Firebase Crashlytics
+        Crashlytics.crashlytics().log("⚠️ \(contextStr)\(message)")
 
         #if DEBUG
         print("🟡 Warning: \(contextStr)\(message)")

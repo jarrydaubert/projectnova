@@ -6,6 +6,11 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		AEB7456A2EE86A6E00CF2778 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = AEB745692EE86A6E00CF2778 /* FirebaseAnalytics */; };
+		AEB7456C2EE86A6E00CF2778 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = AEB7456B2EE86A6E00CF2778 /* FirebaseCrashlytics */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		AE95F74B2EE1F23D000822C0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -53,6 +58,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				AEB7456A2EE86A6E00CF2778 /* FirebaseAnalytics in Frameworks */,
+				AEB7456C2EE86A6E00CF2778 /* FirebaseCrashlytics in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -114,6 +121,8 @@
 			);
 			name = "Project PawNova";
 			packageProductDependencies = (
+				AEB745692EE86A6E00CF2778 /* FirebaseAnalytics */,
+				AEB7456B2EE86A6E00CF2778 /* FirebaseCrashlytics */,
 			);
 			productName = "Project PawNova";
 			productReference = AE95F73B2EE1F23C000822C0 /* Project PawNova.app */;
@@ -197,6 +206,9 @@
 			);
 			mainGroup = AE95F7322EE1F23C000822C0;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				AEB745682EE86A6E00CF2778 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = AE95F73C2EE1F23C000822C0 /* Products */;
 			projectDirPath = "";
@@ -619,6 +631,30 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		AEB745682EE86A6E00CF2778 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 12.6.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		AEB745692EE86A6E00CF2778 /* FirebaseAnalytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AEB745682EE86A6E00CF2778 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseAnalytics;
+		};
+		AEB7456B2EE86A6E00CF2778 /* FirebaseCrashlytics */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = AEB745682EE86A6E00CF2778 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
+			productName = FirebaseCrashlytics;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = AE95F7332EE1F23C000822C0 /* Project object */;
 }

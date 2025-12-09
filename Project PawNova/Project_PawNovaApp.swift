@@ -8,9 +8,25 @@
 import SwiftUI
 import SwiftData
 import TipKit
+import FirebaseCore
+import FirebaseCrashlytics
+
+/// Firebase App Delegate for initialization
+class AppDelegate: NSObject, UIApplicationDelegate {
+    func application(
+        _ application: UIApplication,
+        didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
+    ) -> Bool {
+        FirebaseApp.configure()
+        return true
+    }
+}
 
 @main
 struct Project_PawNovaApp: App {
+    // Register app delegate for Firebase setup
+    @UIApplicationDelegateAdaptor(AppDelegate.self) var delegate
+
     private let persistence = PersistenceController.shared
     @State private var onboardingManager: OnboardingManager
     @State private var storeService = StoreService.shared

@@ -51,14 +51,16 @@ swiftlint lint --fix
 Project_PawNovaApp
 └── RootView
     ├── OnboardingContainerView (first launch)
-    │   └── SplashView → WelcomeView → PetNameView → PaywallView
+    │   └── SplashView (video logo) → WelcomeView → PetNameView → PaywallView
     └── MainTabView (after onboarding)
-        ├── ContentView (Create)
-        ├── LibraryView (Browse)
+        ├── ProjectsView (Home/Landing - default tab)
+        ├── ContentView (Create video)
         └── SettingsView (Config)
 ```
 
 **Key Files:**
+- `ProjectsView.swift` - Main landing screen (shows projects/videos)
+- `ContentView.swift` - Video creation UI
 - `FalService.swift` - API client (@MainActor, 4 AI models)
 - `PetVideo.swift` - SwiftData model
 - `PersistenceController.swift` - SwiftData container
@@ -69,7 +71,8 @@ Project_PawNovaApp
 - `DiagnosticsService.swift` - Logging and diagnostic export
 - `Tips.swift` - TipKit contextual tips
 - `Store/StoreService.swift` - StoreKit 2 purchases
-- `Onboarding/` - Splash, Welcome, PetName, Notifications, Paywall
+- `Onboarding/SplashView.swift` - Animated video logo (loops from 4s)
+- `Onboarding/` - Welcome, PetName, Notifications, Paywall
 
 ## Patterns
 
@@ -98,7 +101,11 @@ final class PetVideo {
 ### Tab Navigation
 ```swift
 @Environment(TabRouter.self) private var router
-router.goToCreate()  // Switch tabs
+router.goToProjects()  // Go to Projects (home)
+router.goToCreate()    // Go to Create tab
+router.goToSettings()  // Go to Settings
+
+// Tab order: Projects (default) → Create → Settings
 ```
 
 ### Haptics

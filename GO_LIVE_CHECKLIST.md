@@ -25,8 +25,8 @@ Complete these items before submitting to the App Store.
 - [ ] Bundle ID finalized (e.g., `com.pawnova.app`)
 - [ ] Version number set (1.0.0)
 - [ ] Build number incremented
-- [ ] App icon added (all sizes: 1024x1024 for App Store, 180x180 for iPhone, etc.)
-- [ ] Launch screen configured
+- [x] App icon added (all sizes) ✅ Added
+- [x] Launch screen configured (animated video logo) ✅ Implemented
 - [ ] Supported orientations set (Portrait recommended)
 - [ ] Minimum iOS version: 18.0
 - [ ] App category: Photo & Video
@@ -44,21 +44,22 @@ Complete these items before submitting to the App Store.
 
 ### 4. In-App Purchases
 
-#### Subscriptions:
-- [ ] `pawnova.pro.monthly` - $9.99/month
-- [ ] `pawnova.pro.yearly` - $79.99/year
+#### Subscriptions (StoreKit 2):
+- [ ] `com.pawnova.subscription.monthly` - £7.99/month (5000 credits)
+- [ ] `com.pawnova.subscription.annual` - £49.99/year (5000 credits/mo)
 - [ ] Subscription group created
 - [ ] Free trial configured (optional: 7-day trial)
 - [ ] Subscription descriptions added
 
 #### Consumables (Credit Packs):
-- [ ] `pawnova.credits.500` - 500 credits
-- [ ] `pawnova.credits.2000` - 2,000 credits
-- [ ] `pawnova.credits.5000` - 5,000 credits
+- [ ] `com.pawnova.credits.starter` - 500 credits
+- [ ] `com.pawnova.credits.popular` - 2,000 credits
+- [ ] `com.pawnova.credits.pro` - 6,000 credits
 
-#### StoreKit:
+#### StoreKit 2 Implementation:
+- [x] StoreService.swift implemented ✅
 - [ ] Products tested in Sandbox environment
-- [ ] Restore purchases working
+- [x] Restore purchases button in Settings ✅
 - [ ] Receipt validation (optional for extra security)
 
 ### 5. Privacy & Permissions
@@ -74,21 +75,21 @@ Complete these items before submitting to the App Store.
 - [ ] Privacy nutrition label completed
 
 ### 6. Legal
-- [ ] Terms of Service accessible in app ✅
-- [ ] Privacy Policy accessible in app ✅
+- [x] Terms of Service accessible in app ✅ (Settings → Terms)
+- [x] Privacy Policy accessible in app ✅ (Settings → Privacy)
 - [ ] EULA configured in App Store Connect
 - [ ] Copyright notices updated
 
 ### 7. Testing
 
 #### Functional Testing:
-- [ ] Onboarding flow complete
-- [ ] Video generation works (real API)
-- [ ] All payment flows tested
-- [ ] Sign in with Apple working
-- [ ] Notifications working
-- [ ] All navigation paths tested
-- [ ] Error states handled gracefully
+- [x] Onboarding flow complete ✅ (Splash → Welcome → PetName → Paywall)
+- [ ] Video generation works (real API) ⚠️ Demo mode only tested
+- [ ] All payment flows tested (StoreKit sandbox)
+- [x] Sign in with Apple working ✅
+- [x] Notifications permission flow ✅
+- [x] All navigation paths tested ✅ (Projects/Create/Settings tabs)
+- [x] Error states handled gracefully ✅ (ErrorHandling.swift)
 
 #### Device Testing:
 - [ ] iPhone 15 Pro / 16 Pro
@@ -97,15 +98,15 @@ Complete these items before submitting to the App Store.
 - [ ] iPad (if universal app)
 
 #### Edge Cases:
-- [ ] No internet connection handling
+- [x] No internet connection handling ✅ (OfflineBanner, NetworkMonitor)
 - [ ] Low storage handling
 - [ ] Background/foreground transitions
 - [ ] Memory warnings
 
-### 8. Analytics & Monitoring (Optional)
-- [ ] Crash reporting (Firebase Crashlytics / Sentry)
-- [ ] Analytics (Mixpanel / Amplitude)
-- [ ] Error logging for production debugging
+### 8. Analytics & Monitoring
+- [x] Crash reporting (Firebase Crashlytics) ✅ Integrated
+- [ ] Analytics (Firebase Analytics / Mixpanel)
+- [x] Error logging (DiagnosticsService + Crashlytics) ✅ Integrated
 
 ### 9. Marketing Assets
 - [ ] App Store screenshots (all sizes)
@@ -177,5 +178,7 @@ Support: support@pawnova.app
 
 | Version | Date | Notes |
 |---------|------|-------|
-| 0.1.0 | Dec 2024 | Initial development build |
+| 0.1.0 | Dec 4 2024 | Initial development build |
+| 0.2.0 | Dec 8 2024 | Added StoreKit 2, TipKit, error handling, diagnostics |
+| 0.3.0 | Dec 9 2024 | Firebase Crashlytics, animated splash, Projects landing |
 | 1.0.0 | TBD | App Store release |

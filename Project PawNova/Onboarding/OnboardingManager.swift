@@ -57,10 +57,10 @@ final class OnboardingManager {
     /// Whether user is authenticated
     var isAuthenticated: Bool = false
 
-    /// Whether user is subscribed (Pro) - persisted
+    /// Whether user is subscribed (Pro) - stored securely in Keychain
     var isSubscribed: Bool {
-        get { UserDefaults.standard.bool(forKey: Keys.isSubscribed) }
-        set { UserDefaults.standard.set(newValue, forKey: Keys.isSubscribed) }
+        get { SecureUserData.shared.isSubscribed }
+        set { SecureUserData.shared.setSubscribed(newValue) }
     }
 
     /// Whether notifications permission was requested
@@ -111,8 +111,9 @@ final class OnboardingManager {
         UserDefaults.standard.removeObject(forKey: Keys.hasCompletedOnboarding)
         UserDefaults.standard.removeObject(forKey: Keys.userName)
         UserDefaults.standard.removeObject(forKey: Keys.petName)
-        UserDefaults.standard.removeObject(forKey: Keys.isSubscribed)
         UserDefaults.standard.removeObject(forKey: Keys.notificationsRequested)
+        // Subscription stored in Keychain via SecureUserData
+        SecureUserData.shared.setSubscribed(false)
         currentStep = .splash
         isAuthenticated = false
     }

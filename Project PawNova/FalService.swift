@@ -52,6 +52,15 @@ enum AIModel: String, CaseIterable, Identifiable {
         }
     }
 
+    /// Duration in seconds (for storage in PetVideo)
+    var durationSeconds: Int {
+        switch self {
+        case .veo3Fast, .veo3Standard: return 8
+        case .kling25: return 5
+        case .hailuo02: return 6
+        }
+    }
+
     var description: String {
         switch self {
         case .veo3Fast: return "Fast generation, great quality"
@@ -196,11 +205,91 @@ final class FalService {
         ProcessInfo.processInfo.environment["FAL_KEY"] ?? ""
     }
 
-    /// Creates a FalService instance.
-    /// - Parameter session: URLSession to use for network requests. Defaults to `.shared`.
+    /// Creates a FalService instance with configured timeouts.
+    /// - Parameter session: URLSession to use for network requests. If nil, creates a session with recommended timeouts.
     ///                      Pass a custom session for testing with MockURLProtocol.
-    init(session: URLSession = .shared) {
-        self.session = session
+    init(session: URLSession? = nil) {
+        if let session = session {
+            self.session = session
+        } else {
+            // Configure URLSession with explicit timeouts
+            let config = URLSessionConfiguration.default
+            config.timeoutIntervalForRequest = 30 // 30 seconds for individual requests
+            config.timeoutIntervalForResource = 300 // 5 minutes for complete resource (video generation can be slow)
+            config.waitsForConnectivity = true
+            self.session = URLSession(configuration: config)
+        }
+    }
+
+    // MARK: - Image Upload
+
+    /// Uploads an image to fal.ai storage and returns the URL
+    /// - Parameter imageData: JPEG image data
+    /// - Returns: URL string where the image is hosted
+    func uploadImage(_ imageData: Data) async throws -> String {
+        // DEMO MODE: Return mock URL instantly
+        if demoMode {
+            logger.info("🎭 DEMO MODE: Returning mock image upload URL")
+            try await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
+            return "https://fal.ai/demo/uploaded-pet-photo.jpg"
+        }
+
+        // REAL API MODE
+        // Check network connectivity first
+        try NetworkMonitor.shared.checkConnection()
+
+        guard !apiKey.isEmpty else {
+            logger.error("❌ FAL API Key is missing for image upload")
+            throw FalServiceError.missingAPIKey
+        }
+
+        // fal.ai uses a REST upload endpoint
+        let uploadURL = URL(string: "https://fal.ai/api/storage/upload/initiate")!
+        var request = URLRequest(url: uploadURL)
+        request.httpMethod = "POST"
+        request.setValue("Key \(apiKey)", forHTTPHeaderField: "Authorization")
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+
+        // Request upload URL
+        let initiateBody: [String: Any] = [
+            "file_name": "pet_photo_\(UUID().uuidString).jpg",
+            "content_type": "image/jpeg"
+        ]
+        request.httpBody = try JSONSerialization.data(withJSONObject: initiateBody)
+
+        let (initiateData, initiateResponse) = try await session.data(for: request)
+
+        guard let httpResponse = initiateResponse as? HTTPURLResponse,
+              httpResponse.statusCode == 200 else {
+            logger.error("❌ Failed to initiate image upload")
+            throw FalServiceError.imageUploadFailed
+        }
+
+        // Parse upload URL
+        let initiateResult = try JSONDecoder().decode(UploadInitiateResponse.self, from: initiateData)
+
+        // Validate external URL (comes from API response - must validate)
+        guard let uploadUrl = URL(string: initiateResult.uploadUrl) else {
+            logger.error("❌ Invalid upload URL received from API: \(initiateResult.uploadUrl)")
+            throw FalServiceError.invalidResponse
+        }
+
+        // Upload the actual image data
+        var uploadRequest = URLRequest(url: uploadUrl)
+        uploadRequest.httpMethod = "PUT"
+        uploadRequest.setValue("image/jpeg", forHTTPHeaderField: "Content-Type")
+        uploadRequest.httpBody = imageData
+
+        let (_, uploadResponse) = try await session.data(for: uploadRequest)
+
+        guard let uploadHttpResponse = uploadResponse as? HTTPURLResponse,
+              (200...299).contains(uploadHttpResponse.statusCode) else {
+            logger.error("❌ Failed to upload image data")
+            throw FalServiceError.imageUploadFailed
+        }
+
+        logger.info("✅ Image uploaded successfully: \(initiateResult.fileUrl)")
+        return initiateResult.fileUrl
     }
 
     // MARK: - AI Prompt Enhancement
@@ -251,6 +340,9 @@ final class FalService {
         }
 
         // REAL API MODE
+        // Check network connectivity first
+        try NetworkMonitor.shared.checkConnection()
+
         let endpoint = model.rawValue
 
         // Check API key
@@ -327,6 +419,9 @@ final class FalService {
         }
 
         // REAL API MODE
+        // Check network connectivity first
+        try NetworkMonitor.shared.checkConnection()
+
         let endpoint = "fal-ai/flux/schnell"
         let request = TextToImageRequest(prompt: prompt)
 
@@ -543,6 +638,16 @@ private struct SubmitResponse: Codable {
     }
 }
 
+private struct UploadInitiateResponse: Codable {
+    let uploadUrl: String
+    let fileUrl: String
+
+    enum CodingKeys: String, CodingKey {
+        case uploadUrl = "upload_url"
+        case fileUrl = "file_url"
+    }
+}
+
 private struct StatusResponse: Codable {
     let status: String
     let data: ImageData?
@@ -576,6 +681,7 @@ enum FalServiceError: LocalizedError {
     case generationFailed
     case timeout
     case missingAPIKey
+    case imageUploadFailed
 
     var errorDescription: String? {
         switch self {
@@ -591,6 +697,8 @@ enum FalServiceError: LocalizedError {
             return "Request timed out"
         case .missingAPIKey:
             return "API key not configured"
+        case .imageUploadFailed:
+            return "Failed to upload image"
         }
     }
 }

@@ -14,8 +14,9 @@ struct ProjectsView: View {
     @Environment(TabRouter.self) private var router: TabRouter?
     @Query(sort: \PetVideo.timestamp, order: .reverse) private var videos: [PetVideo]
 
-    @AppStorage("userCredits") private var userCredits: Int = 0
+    private var userCredits: Int { SecureUserData.shared.credits }
     @State private var showPaywall = false
+    @State private var showShowcase = false
     @State private var selectedVideo: PetVideo?
     @State private var showingVideoDetail = false
 
@@ -70,6 +71,12 @@ struct ProjectsView: View {
             .sheet(isPresented: $showingVideoDetail) {
                 if let video = selectedVideo {
                     VideoDetailView(video: video)
+                }
+            }
+            .sheet(isPresented: $showShowcase) {
+                ShowcaseView {
+                    showShowcase = false
+                    router?.goToCreate()
                 }
             }
         }
@@ -166,17 +173,33 @@ struct ProjectsView: View {
                     .multilineTextAlignment(.center)
             }
 
-            Button {
-                router?.goToCreate()
-                Haptic.medium()
-            } label: {
-                Text("Create Your First Video")
-                    .font(.headline.bold())
-                    .foregroundColor(.pawBackground)
-                    .padding(.horizontal, 32)
-                    .padding(.vertical, 14)
-                    .background(LinearGradient.pawButton)
-                    .clipShape(Capsule())
+            // CTA Buttons
+            VStack(spacing: 12) {
+                Button {
+                    router?.goToCreate()
+                    Haptic.medium()
+                } label: {
+                    Text("Create Your First Video")
+                        .font(.headline.bold())
+                        .foregroundColor(.pawBackground)
+                        .frame(maxWidth: 280)
+                        .padding(.vertical, 14)
+                        .background(LinearGradient.pawButton)
+                        .clipShape(Capsule())
+                }
+
+                // See Examples button
+                Button {
+                    Haptic.light()
+                    showShowcase = true
+                } label: {
+                    HStack(spacing: 6) {
+                        Image(systemName: "play.rectangle.fill")
+                        Text("See Examples")
+                    }
+                    .font(.subheadline.bold())
+                    .foregroundColor(.pawPrimary)
+                }
             }
             .padding(.top, 8)
         }

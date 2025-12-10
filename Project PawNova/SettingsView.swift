@@ -415,9 +415,8 @@ struct SettingsView: View {
         // Clear all user data
         onboarding.reset()
 
-        // Clear UserDefaults
-        UserDefaults.standard.removeObject(forKey: "userCredits")
-        UserDefaults.standard.removeObject(forKey: "isSubscribed")
+        // Clear secure Keychain data (credits and subscription)
+        SecureUserData.shared.resetAll()
 
         // In production: Also call backend API to delete server-side data
         // and revoke Sign in with Apple credentials

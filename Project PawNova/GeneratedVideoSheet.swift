@@ -117,6 +117,7 @@ struct GeneratedVideoSheet: View {
         }
         .onDisappear {
             player?.pause()
+            player = nil
         }
         .sheet(isPresented: $showShareSheet) {
             ShareSheet(items: [videoURL])

@@ -169,6 +169,105 @@ In DEBUG builds only:
 | Kling 2.5 | Kuaishou | 5s | 600 | No |
 | Hailuo-02 | MiniMax | 6s | 500 | No |
 
+## Security Requirements
+
+### Sensitive Data Storage
+```swift
+// ✅ CORRECT: Use Keychain for sensitive data
+SecureUserData.shared.setCredits(100)
+SecureUserData.shared.setSubscribed(true)
+
+// ❌ WRONG: Never store sensitive data in UserDefaults
+UserDefaults.standard.set(credits, forKey: "credits")  // INSECURE
+```
+
+### API Keys
+- Never hardcode API keys in source code
+- Use environment variables for development only
+- Production: Implement server-side proxy to hide keys from client
+- `GoogleService-Info.plist` must be in `.gitignore`
+
+### URL Validation
+```swift
+// ✅ CORRECT: Guard against invalid URLs
+guard let url = URL(string: urlString) else {
+    throw FalServiceError.invalidResponse
+}
+
+// ❌ WRONG: Force unwrap URLs
+let url = URL(string: urlString)!  // CRASH RISK
+```
+
+### Network Security
+- Check network connectivity before API calls
+- Use `NetworkMonitor.shared.checkConnection()` before requests
+- Configure URLSession with explicit timeouts
+
+## Error Handling Patterns
+
+### Do-Catch for Persistence
+```swift
+// ✅ CORRECT: Log persistence errors
+do {
+    try modelContext.save()
+} catch {
+    ErrorLogger.shared.log(error, context: "Save")
+}
+
+// ❌ WRONG: Silent failure
+try? modelContext.save()  // Errors lost
+```
+
+### User-Facing Errors
+```swift
+// Use .errorAlert modifier from ErrorHandling.swift
+.errorAlert(error: $error, onRetry: { /* retry */ })
+```
+
+## Memory Management
+
+### AVPlayer Cleanup
+```swift
+// ✅ CORRECT: Clean up AVPlayer
+.onDisappear {
+    player?.pause()
+    player = nil  // Required to release memory
+}
+
+// ❌ WRONG: Missing nil assignment
+.onDisappear {
+    player?.pause()  // Player may leak
+}
+```
+
+### Closures with Self
+```swift
+// ✅ CORRECT: Single weak capture
+Task.detached { [weak self] in
+    guard let self else { return }
+    await self.doWork()
+}
+
+// ❌ WRONG: Double weak capture
+Task.detached { [weak self] in
+    await MainActor.run { [weak self] in  // Redundant
+        self?.doWork()
+    }
+}
+```
+
+## Performance Guidelines
+
+### View Size
+- Extract subviews if file exceeds 200 lines
+- Use `LazyVStack`/`LazyVGrid` for long lists
+- Memoize expensive computed properties
+
+### Network
+- Check connectivity before API calls: `try NetworkMonitor.shared.checkConnection()`
+- Configure timeouts on URLSession
+- Implement retry with exponential backoff using `withRetry()`
+
 ## Constraints
 
 - iOS 18+ required (SwiftData, @Observable, TipKit)
@@ -178,6 +277,9 @@ In DEBUG builds only:
 - Onboarding completes before MainTabView shows
 - AuthenticationServices for Sign in with Apple
 - Simulator console noise (haptics, audio) is expected
+- Use Keychain (SecureStorage) for credits, subscription, tokens
+- Never force-unwrap URLs from external sources
+- Clean up AVPlayer in onDisappear
 
 ## Documentation
 

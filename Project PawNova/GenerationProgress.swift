@@ -11,6 +11,7 @@ import SwiftUI
 
 enum GenerationStatus: Equatable {
     case idle
+    case uploadingImage
     case submitting
     case queued(position: Int?)
     case processing(progress: Double, stage: String)
@@ -20,7 +21,7 @@ enum GenerationStatus: Equatable {
 
     var isInProgress: Bool {
         switch self {
-        case .submitting, .queued, .processing, .downloading:
+        case .uploadingImage, .submitting, .queued, .processing, .downloading:
             return true
         default:
             return false
@@ -30,6 +31,7 @@ enum GenerationStatus: Equatable {
     var progressValue: Double {
         switch self {
         case .idle: return 0
+        case .uploadingImage: return 0.02
         case .submitting: return 0.05
         case .queued: return 0.1
         case .processing(let progress, _): return 0.1 + (progress * 0.8)
@@ -43,6 +45,8 @@ enum GenerationStatus: Equatable {
         switch self {
         case .idle:
             return "Ready"
+        case .uploadingImage:
+            return "Uploading photo..."
         case .submitting:
             return "Submitting request..."
         case .queued(let position):

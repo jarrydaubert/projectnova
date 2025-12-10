@@ -193,8 +193,8 @@ final class StoreService {
                 isSubscribed = true
                 purchasedSubscription = subscriptions.first { $0.id == transaction.productID }
 
-                // Persist to UserDefaults for offline access
-                UserDefaults.standard.set(true, forKey: "isSubscribed")
+                // Persist to Keychain for secure offline access
+                SecureUserData.shared.setSubscribed(true)
                 logger.info("✅ Active subscription: \(transaction.productID)")
                 return
             }
@@ -203,7 +203,7 @@ final class StoreService {
         // No active subscription
         isSubscribed = false
         purchasedSubscription = nil
-        UserDefaults.standard.set(false, forKey: "isSubscribed")
+        SecureUserData.shared.setSubscribed(false)
     }
 
     // MARK: - Transaction Listener
@@ -224,8 +224,9 @@ final class StoreService {
 
                     await transaction.finish()
                 } catch {
-                    // Log error (using print for detached task safety)
-                    print("❌ Transaction verification failed: \(error)")
+                    #if DEBUG
+                    logger.error("❌ Transaction verification failed: \(error)")
+                    #endif
                 }
             }
         }
@@ -245,10 +246,9 @@ final class StoreService {
     // MARK: - Credits Management
 
     private func addCredits(_ amount: Int) {
-        let currentCredits = UserDefaults.standard.integer(forKey: "userCredits")
-        let newCredits = currentCredits + amount
-        UserDefaults.standard.set(newCredits, forKey: "userCredits")
-        logger.info("✅ Credits updated: \(currentCredits) → \(newCredits)")
+        let currentCredits = SecureUserData.shared.credits
+        SecureUserData.shared.addCredits(amount)
+        logger.info("✅ Credits updated: \(currentCredits) → \(SecureUserData.shared.credits)")
     }
 }
 

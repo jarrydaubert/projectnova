@@ -31,6 +31,7 @@ struct VideoDetailView: View {
                     }
                     .onDisappear {
                         player?.pause()
+                        player = nil
                     }
             } else {
                 Rectangle()
@@ -86,16 +87,16 @@ struct VideoDetailView: View {
 
                     if let url = video.generatedURL {
                         SaveToPhotosButton(videoURL: url, style: .compact)
-                    }
 
-                    ShareLink(item: video.generatedURL ?? URL(string: "https://placeholder.com")!) {
-                        VStack(spacing: 4) {
-                            Image(systemName: "square.and.arrow.up")
-                                .font(.title2)
-                            Text("Share")
-                                .font(.caption2)
+                        ShareLink(item: url) {
+                            VStack(spacing: 4) {
+                                Image(systemName: "square.and.arrow.up")
+                                    .font(.title2)
+                                Text("Share")
+                                    .font(.caption2)
+                            }
+                            .foregroundStyle(.tint)
                         }
-                        .foregroundStyle(.tint)
                     }
 
                     Spacer()

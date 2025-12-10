@@ -41,6 +41,7 @@ struct ContentView: View {
     @State private var showError = false
     @State private var generatedVideoURL: URL?
     @State private var currentPrompt: String?
+    @State private var uploadedPhotoURL: String?
     @State private var showGeneratedVideo = false
     @State private var generationStatus: GenerationStatus = .idle
     @State private var generationTask: Task<Void, Never>?
@@ -58,11 +59,10 @@ struct ContentView: View {
     @State private var selectedAspectRatio: AspectRatio = .youtube
     @State private var aiEnhanceEnabled: Bool = true
 
-    // User's credit balance (persisted)
-    @AppStorage("userCredits") private var userCredits: Int = 5000
-
-    // Subscription state (from UserDefaults via OnboardingManager pattern)
-    @AppStorage("isSubscribed") private var isSubscribed: Bool = false
+    // User's credit balance and subscription (secure Keychain storage)
+    private var secureData: SecureUserData { SecureUserData.shared }
+    private var userCredits: Int { secureData.credits }
+    private var isSubscribed: Bool { secureData.isSubscribed }
 
     // Payment gate states
     @State private var showPaywall = false
@@ -148,7 +148,7 @@ struct ContentView: View {
         }
         // Paywall sheet for non-subscribers
         .sheet(isPresented: $showPaywall) {
-            PaywallSheetView(isSubscribed: $isSubscribed)
+            PaywallSheetView()
         }
         // Full-screen generated video presentation
         .fullScreenCover(isPresented: $showGeneratedVideo) {
@@ -721,7 +721,7 @@ struct ContentView: View {
 
         // Deduct credits upfront
         let creditCost = selectedModel.credits
-        userCredits -= creditCost
+        _ = secureData.deductCredits(creditCost)
 
         isGenerating = true
         generationStatus = .idle
@@ -734,8 +734,16 @@ struct ContentView: View {
         )
 
         do {
-            // TODO: Upload photo if in photo mode
-            let imageUrl: String? = nil
+            // Upload photo if in photo mode
+            var imageUrl: String?
+            if inputMode == .photo, let image = selectedPhotoImage {
+                generationStatus = .uploadingImage
+                if let jpegData = image.jpegData(compressionQuality: 0.85) {
+                    imageUrl = try await FalService.shared.uploadImage(jpegData)
+                    uploadedPhotoURL = imageUrl // Store for saving to history
+                    DiagnosticsService.shared.info("Photo uploaded: \(imageUrl ?? "nil")", category: "Generation")
+                }
+            }
 
             // Enhance prompt if AI enhancement is enabled
             let finalPrompt = aiEnhanceEnabled
@@ -790,7 +798,7 @@ struct ContentView: View {
         } catch {
             await MainActor.run {
                 // Refund credits on failure
-                userCredits += creditCost
+                secureData.addCredits(creditCost)
                 errorMessage = error.localizedDescription
                 showError = true
                 isGenerating = false
@@ -811,7 +819,7 @@ struct ContentView: View {
         generationStatus = .idle
 
         // Refund credits
-        userCredits += selectedModel.credits
+        secureData.addCredits(selectedModel.credits)
 
         Haptic.warning()
         DiagnosticsService.shared.info("Generation cancelled by user", category: "Generation")
@@ -821,7 +829,17 @@ struct ContentView: View {
         guard let videoURL = generatedVideoURL,
               let prompt = currentPrompt else { return }
 
-        let video = PetVideo(prompt: prompt, generatedURL: videoURL)
+        let sourcePhotoURL = uploadedPhotoURL.flatMap { URL(string: $0) }
+
+        let video = PetVideo(
+            prompt: prompt,
+            generatedURL: videoURL,
+            sourcePhotoURL: sourcePhotoURL,
+            modelUsed: selectedModel.rawValue,
+            aspectRatio: selectedAspectRatio.rawValue,
+            duration: selectedModel.durationSeconds,
+            creditsSpent: selectedModel.credits
+        )
         modelContext.insert(video)
         try? modelContext.save()
 
@@ -837,6 +855,7 @@ struct ContentView: View {
     private func clearGenerationState() {
         generatedVideoURL = nil
         currentPrompt = nil
+        uploadedPhotoURL = nil
         promptText = ""
         selectedPhotoImage = nil
     }
@@ -852,7 +871,6 @@ struct ContentView: View {
 /// Sheet version of paywall for in-app subscription prompt
 struct PaywallSheetView: View {
     @Environment(\.dismiss) private var dismiss
-    @Binding var isSubscribed: Bool
 
     @State private var selectedPlan: SubscriptionPlan = .yearly
     @State private var isLoading = false
@@ -1021,7 +1039,7 @@ struct PaywallSheetView: View {
         // Simulate subscription (demo mode processes this instantly, real mode would call RevenueCat)
         DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) {
             isLoading = false
-            isSubscribed = true
+            SecureUserData.shared.setSubscribed(true)
             Haptic.success()
             dismiss()
         }

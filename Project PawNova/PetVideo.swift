@@ -31,6 +31,20 @@ final class PetVideo {
     /// Whether the user has marked this video as a favorite.
     var isFavorite: Bool = false
 
+    // MARK: - Generation Metadata
+
+    /// The AI model used for generation (e.g., "veo3Fast", "kling25")
+    var modelUsed: String?
+
+    /// The aspect ratio used (e.g., "16:9", "9:16", "1:1")
+    var aspectRatio: String?
+
+    /// Video duration in seconds
+    var duration: Int?
+
+    /// Credits spent on this generation
+    var creditsSpent: Int?
+
     /// A short preview of the prompt, truncated to 30 characters with an ellipsis when needed.
     var promptPreview: String {
         let s = prompt
@@ -40,11 +54,36 @@ final class PetVideo {
     /// Indicates whether a video URL has been generated for this record.
     var isGenerated: Bool { generatedURL != nil }
 
-    init(prompt: String, generatedURL: URL? = nil, timestamp: Date = Date(), sourcePhotoURL: URL? = nil) {
+    /// Display name for the model used
+    var modelDisplayName: String {
+        guard let model = modelUsed else { return "Unknown" }
+        switch model {
+        case "veo3Fast": return "Veo 3 Fast"
+        case "veo3Standard": return "Veo 3 Pro"
+        case "kling25": return "Kling 2.5"
+        case "hailuo02": return "Hailuo AI"
+        default: return model
+        }
+    }
+
+    init(
+        prompt: String,
+        generatedURL: URL? = nil,
+        timestamp: Date = Date(),
+        sourcePhotoURL: URL? = nil,
+        modelUsed: String? = nil,
+        aspectRatio: String? = nil,
+        duration: Int? = nil,
+        creditsSpent: Int? = nil
+    ) {
         self.prompt = prompt
         self.generatedURL = generatedURL
         self.timestamp = timestamp
         self.sourcePhotoURL = sourcePhotoURL
+        self.modelUsed = modelUsed
+        self.aspectRatio = aspectRatio
+        self.duration = duration
+        self.creditsSpent = creditsSpent
     }
 
     #if DEBUG

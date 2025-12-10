@@ -11,15 +11,27 @@ Complete these items before submitting to the App Store.
 - [ ] Demo mode OFF by default for production
 - [ ] Remove all `print()` statements
 - [ ] Remove any test/debug code
+- [ ] No force-unwrapped URLs from external sources
+- [ ] AVPlayer cleanup in all onDisappear blocks
 
-### 2. API & Backend
+### 2. Security (CRITICAL)
+- [ ] `GoogleService-Info.plist` in `.gitignore` (remove from git history if committed)
+- [ ] Sensitive data stored in Keychain (SecureStorage), NOT UserDefaults
+- [ ] Credits and subscription status use SecureUserData.shared
+- [ ] No hardcoded API keys in source code
+- [ ] URL validation with guard statements (no force unwraps)
+- [ ] Network connectivity checked before API calls
+- [ ] URLSession configured with explicit timeouts
+
+### 3. API & Backend
 - [ ] fal.ai API key stored securely (NOT in code)
 - [ ] Production API endpoints configured
 - [ ] Error handling for all API calls
 - [ ] Rate limiting considered
 - [ ] Backend proxy set up (recommended - hide API key from client)
+- [ ] Receipt validation for purchases (server-side recommended)
 
-### 3. App Store Configuration
+### 4. App Store Configuration
 
 #### In Xcode:
 - [ ] Bundle ID finalized (e.g., `com.pawnova.app`)
@@ -42,7 +54,7 @@ Complete these items before submitting to the App Store.
 - [ ] Privacy Policy URL: https://pawnova.app/privacy
 - [ ] Age rating completed (4+ recommended)
 
-### 4. In-App Purchases
+### 5. In-App Purchases
 
 #### Subscriptions (StoreKit 2):
 - [ ] `com.pawnova.subscription.monthly` - £7.99/month (5000 credits)
@@ -62,7 +74,7 @@ Complete these items before submitting to the App Store.
 - [x] Restore purchases button in Settings ✅
 - [ ] Receipt validation (optional for extra security)
 
-### 5. Privacy & Permissions
+### 6. Privacy & Permissions
 
 #### Info.plist Keys:
 - [ ] `NSPhotoLibraryAddUsageDescription` - "PawNova needs access to save videos to your Photos"
@@ -74,13 +86,13 @@ Complete these items before submitting to the App Store.
 - [ ] Third-party SDKs disclosed (fal.ai)
 - [ ] Privacy nutrition label completed
 
-### 6. Legal
+### 7. Legal
 - [x] Terms of Service accessible in app ✅ (Settings → Terms)
 - [x] Privacy Policy accessible in app ✅ (Settings → Privacy)
 - [ ] EULA configured in App Store Connect
 - [ ] Copyright notices updated
 
-### 7. Testing
+### 8. Testing
 
 #### Functional Testing:
 - [x] Onboarding flow complete ✅ (Splash → Welcome → PetName → Paywall)
@@ -103,12 +115,12 @@ Complete these items before submitting to the App Store.
 - [ ] Background/foreground transitions
 - [ ] Memory warnings
 
-### 8. Analytics & Monitoring
+### 9. Analytics & Monitoring
 - [x] Crash reporting (Firebase Crashlytics) ✅ Integrated
 - [ ] Analytics (Firebase Analytics / Mixpanel)
 - [x] Error logging (DiagnosticsService + Crashlytics) ✅ Integrated
 
-### 9. Marketing Assets
+### 10. Marketing Assets
 - [ ] App Store screenshots (all sizes)
 - [ ] App icon variations
 - [ ] Press kit (optional)
@@ -176,9 +188,4 @@ Support: support@pawnova.app
 
 ## Version History
 
-| Version | Date | Notes |
-|---------|------|-------|
-| 0.1.0 | Dec 4 2024 | Initial development build |
-| 0.2.0 | Dec 8 2024 | Added StoreKit 2, TipKit, error handling, diagnostics |
-| 0.3.0 | Dec 9 2024 | Firebase Crashlytics, animated splash, Projects landing |
-| 1.0.0 | TBD | App Store release |
+Track version changes in git tags and releases. Use semantic versioning (MAJOR.MINOR.PATCH).

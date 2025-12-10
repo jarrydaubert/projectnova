@@ -11,17 +11,17 @@ Complete these items before submitting to the App Store.
 - [ ] Demo mode OFF by default for production
 - [ ] Remove all `print()` statements
 - [ ] Remove any test/debug code
-- [ ] No force-unwrapped URLs from external sources
-- [ ] AVPlayer cleanup in all onDisappear blocks
+- [x] No force-unwrapped URLs from external sources ✅ Fixed in FalService, VideoDetailView
+- [x] AVPlayer cleanup in all onDisappear blocks ✅ Fixed in GeneratedVideoSheet, VideoDetailView
 
 ### 2. Security (CRITICAL)
 - [ ] `GoogleService-Info.plist` in `.gitignore` (remove from git history if committed)
-- [ ] Sensitive data stored in Keychain (SecureStorage), NOT UserDefaults
-- [ ] Credits and subscription status use SecureUserData.shared
+- [x] Sensitive data stored in Keychain (SecureStorage), NOT UserDefaults ✅ Migrated
+- [x] Credits and subscription status use SecureUserData.shared ✅ All files updated
 - [ ] No hardcoded API keys in source code
-- [ ] URL validation with guard statements (no force unwraps)
-- [ ] Network connectivity checked before API calls
-- [ ] URLSession configured with explicit timeouts
+- [x] URL validation with guard statements (no force unwraps) ✅ FalService fixed
+- [x] Network connectivity checked before API calls ✅ Added to FalService
+- [x] URLSession configured with explicit timeouts ✅ 30s request, 5min resource
 
 ### 3. API & Backend
 - [ ] fal.ai API key stored securely (NOT in code)

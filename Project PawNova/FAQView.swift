@@ -146,7 +146,7 @@ struct FAQView: View {
             question: "I didn't receive my credits",
             answer: "First, try restoring purchases in the Store tab. If credits still don't appear, contact support with your purchase receipt from Apple.",
             category: .troubleshooting
-        )
+        ),
     ]
 
     var filteredFAQs: [FAQItem] {
@@ -247,17 +247,19 @@ struct FAQView: View {
                             .font(.headline)
                             .foregroundColor(.pawTextPrimary)
 
-                        Link(destination: URL(string: "mailto:support@pawnova.app")!) {
-                            HStack {
-                                Image(systemName: "envelope.fill")
-                                Text("Contact Support")
+                        if let supportURL = URL(string: "mailto:support@pawnova.app") {
+                            Link(destination: supportURL) {
+                                HStack {
+                                    Image(systemName: "envelope.fill")
+                                    Text("Contact Support")
+                                }
+                                .font(.subheadline.bold())
+                                .foregroundColor(.white)
+                                .frame(maxWidth: .infinity)
+                                .padding()
+                                .background(LinearGradient.pawPrimary)
+                                .clipShape(RoundedRectangle(cornerRadius: 12))
                             }
-                            .font(.subheadline.bold())
-                            .foregroundColor(.white)
-                            .frame(maxWidth: .infinity)
-                            .padding()
-                            .background(LinearGradient.pawPrimary)
-                            .clipShape(RoundedRectangle(cornerRadius: 12))
                         }
                     }
                     .padding()

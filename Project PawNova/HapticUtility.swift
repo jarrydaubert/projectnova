@@ -11,7 +11,6 @@ import UIKit
 
 @MainActor
 enum Haptic {
-
     /// Check if device supports haptics (false on Simulator)
     private static var supportsHaptics: Bool = {
         #if targetEnvironment(simulator)

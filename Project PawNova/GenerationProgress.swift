@@ -89,7 +89,7 @@ final class GenerationProgressManager {
         aspectRatio: String,
         imageUrl: String? = nil
     ) -> AsyncThrowingStream<GenerationStatus, Error> {
-        return AsyncThrowingStream { continuation in
+        AsyncThrowingStream { continuation in
             Task { @MainActor in
                 do {
                     // Start Live Activity for Dynamic Island/Lock Screen
@@ -134,7 +134,6 @@ final class GenerationProgressManager {
 
                     // Complete Live Activity with success
                     await LiveActivityManager.shared.completeActivity(thumbnailURL: videoURL)
-
                 } catch {
                     let errorMessage = error.localizedDescription
                     self.updateStatus(.failed(error: errorMessage))
@@ -176,7 +175,7 @@ final class GenerationProgressManager {
             (0.55, "Adding details..."),
             (0.7, "Rendering video..."),
             (0.85, "Applying effects..."),
-            (0.95, "Finalizing...")
+            (0.95, "Finalizing..."),
         ]
 
         for (progress, stage) in stages {

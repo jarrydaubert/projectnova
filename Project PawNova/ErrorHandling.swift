@@ -337,7 +337,7 @@ enum InputSanitizer {
         let blockedTerms = [
             "violence", "gore", "blood",
             "nude", "naked", "explicit",
-            "hate", "racist", "discriminat"
+            "hate", "racist", "discriminat",
         ]
 
         return blockedTerms.contains { lowercased.contains($0) }

@@ -234,7 +234,7 @@ final class StoreService {
 
     // MARK: - Verification
 
-    private nonisolated static func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
+    nonisolated private static func checkVerified<T>(_ result: VerificationResult<T>) throws -> T {
         switch result {
         case .unverified:
             throw StoreError.verificationFailed

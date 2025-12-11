@@ -16,7 +16,7 @@ struct GuidelinesView: View {
         ("sparkles", "Be Descriptive", "Include details about setting, lighting, and action. Example: 'Golden retriever running through autumn leaves at sunset'"),
         ("exclamationmark.triangle", "Content Guidelines", "Prompts must be family-friendly. Inappropriate content will be rejected."),
         ("arrow.clockwise", "Credits & Retries", "Credits are deducted when generation starts. If it fails, credits are automatically refunded."),
-        ("photo", "Photo Tips", "For photo-to-video, use clear, well-lit images of your pet facing the camera.")
+        ("photo", "Photo Tips", "For photo-to-video, use clear, well-lit images of your pet facing the camera."),
     ]
 
     var body: some View {

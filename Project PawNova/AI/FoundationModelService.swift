@@ -117,7 +117,7 @@ final class FoundationModelService {
     }
     #else
     private func enhanceWithFoundationModel(_ prompt: String, petName: String?) async -> EnhancedPromptResult? {
-        return nil
+        nil
     }
     #endif
 
@@ -142,7 +142,7 @@ final class FoundationModelService {
         // Check for pet mentions
         let petKeywords = ["dog", "cat", "puppy", "kitten", "pet", "pup", "kitty",
                           "golden retriever", "labrador", "bulldog", "poodle",
-                          "persian", "siamese", "tabby", "corgi", "husky"]
+                          "persian", "siamese", "tabby", "corgi", "husky",]
         let hasPetMention = petKeywords.contains { lowercased.contains($0) }
 
         // Build enhanced prompt
@@ -168,7 +168,7 @@ final class FoundationModelService {
             "with soft natural lighting",
             "beautiful bokeh background",
             "warm golden hour tones",
-            "professional cinematography"
+            "professional cinematography",
         ]
 
         // Pick 1-2 enhancements based on prompt hash for consistency
@@ -201,7 +201,7 @@ final class FoundationModelService {
             "\(name) as a superhero saving the day",
             "\(name) playing on a sunny beach",
             "\(name) in a cozy coffee shop",
-            "\(name) having a space adventure"
+            "\(name) having a space adventure",
         ]
 
         #if canImport(FoundationModels)

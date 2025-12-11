@@ -14,7 +14,7 @@ struct LibraryView: View {
     // Grid layout
     private let columns = [
         GridItem(.flexible(), spacing: 16),
-        GridItem(.flexible(), spacing: 16)
+        GridItem(.flexible(), spacing: 16),
     ]
 
     var filteredVideos: [PetVideo] {
@@ -192,7 +192,7 @@ struct VideoThumbnailCard: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
                     .fill(Color.pawCard)
-                    .aspectRatio(16/9, contentMode: .fit)
+                    .aspectRatio(16 / 9, contentMode: .fit)
 
                 // Play icon overlay
                 Image(systemName: "play.circle.fill")

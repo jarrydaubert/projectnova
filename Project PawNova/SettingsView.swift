@@ -201,14 +201,16 @@ struct SettingsView: View {
                                 .foregroundColor(.pawTextPrimary)
                         }
 
-                        Link(destination: URL(string: "mailto:support@pawnova.app")!) {
-                            HStack {
-                                Label("Contact Support", systemImage: "envelope")
-                                    .foregroundColor(.pawTextPrimary)
-                                Spacer()
-                                Image(systemName: "arrow.up.right")
-                                    .font(.caption)
-                                    .foregroundColor(.pawTextSecondary)
+                        if let supportURL = URL(string: "mailto:support@pawnova.app") {
+                            Link(destination: supportURL) {
+                                HStack {
+                                    Label("Contact Support", systemImage: "envelope")
+                                        .foregroundColor(.pawTextPrimary)
+                                    Spacer()
+                                    Image(systemName: "arrow.up.right")
+                                        .font(.caption)
+                                        .foregroundColor(.pawTextSecondary)
+                                }
                             }
                         }
 

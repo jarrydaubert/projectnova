@@ -9,6 +9,7 @@
 
 import SwiftUI
 import AVKit
+import os.log
 
 struct SplashView: View {
     @Environment(OnboardingManager.self) private var onboarding
@@ -76,6 +77,8 @@ struct LoopingVideoPlayer: View {
     @State private var player: AVQueuePlayer?
     @State private var playerLooper: AVPlayerLooper?
 
+    private let logger = Logger(subsystem: "com.pawnova.app", category: "video")
+
     var body: some View {
         VideoPlayerView(player: player)
             .onAppear {
@@ -90,7 +93,7 @@ struct LoopingVideoPlayer: View {
 
     private func setupPlayer() {
         guard let url = Bundle.main.url(forResource: videoName, withExtension: "mp4") else {
-            print("Video file not found: \(videoName).mp4")
+            logger.error("Video file not found: \(self.videoName).mp4")
             return
         }
 

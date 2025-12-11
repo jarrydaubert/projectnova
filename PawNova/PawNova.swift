@@ -259,24 +259,26 @@ struct PawNovaWidgetMediumView: View {
 
                 VStack {
                     Spacer()
-                    Link(destination: URL(string: "pawnova://create")!) {
-                        VStack(spacing: 6) {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.title)
-                                .foregroundStyle(
-                                    LinearGradient(
-                                        colors: [Color(hex: "#34D399"), Color(hex: "#8B5CF6")],
-                                        startPoint: .top,
-                                        endPoint: .bottom
+                    if let createURL = URL(string: "pawnova://create") {
+                        Link(destination: createURL) {
+                            VStack(spacing: 6) {
+                                Image(systemName: "plus.circle.fill")
+                                    .font(.title)
+                                    .foregroundStyle(
+                                        LinearGradient(
+                                            colors: [Color(hex: "#34D399"), Color(hex: "#8B5CF6")],
+                                            startPoint: .top,
+                                            endPoint: .bottom
+                                        )
                                     )
-                                )
-                            Text("Create")
-                                .font(.caption.bold())
-                                .foregroundColor(.white)
+                                Text("Create")
+                                    .font(.caption.bold())
+                                    .foregroundColor(.white)
+                            }
+                            .frame(width: 70, height: 70)
+                            .background(Color.white.opacity(0.1))
+                            .clipShape(RoundedRectangle(cornerRadius: 12))
                         }
-                        .frame(width: 70, height: 70)
-                        .background(Color.white.opacity(0.1))
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
                     }
                     Spacer()
                 }

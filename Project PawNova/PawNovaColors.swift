@@ -42,7 +42,7 @@ extension Color {
             .sRGB,
             red: Double(r) / 255,
             green: Double(g) / 255,
-            blue:  Double(b) / 255,
+            blue: Double(b) / 255,
             opacity: Double(a) / 255
         )
     }
@@ -88,7 +88,7 @@ struct PawNovaMeshGradient: View {
     @State private var phase: CGFloat = 0
 
     var body: some View {
-        TimelineView(.animation(minimumInterval: 1/30, paused: !animating)) { timeline in
+        TimelineView(.animation(minimumInterval: 1 / 30, paused: !animating)) { timeline in
             MeshGradient(
                 width: 3,
                 height: 3,
@@ -105,7 +105,7 @@ struct PawNovaMeshGradient: View {
                     // Bottom row
                     Color.pawBackground,
                     Color.pawSecondary.opacity(0.3),
-                    Color.pawBackground
+                    Color.pawBackground,
                 ],
                 smoothsColors: true
             )
@@ -134,7 +134,7 @@ struct PawNovaMeshGradient: View {
             // Bottom row
             SIMD2(0.0, 1.0),
             SIMD2(0.5 - offset, 1.0),
-            SIMD2(1.0, 1.0)
+            SIMD2(1.0, 1.0),
         ]
     }
 }
@@ -148,12 +148,12 @@ struct PawNovaStaticMeshGradient: View {
             points: [
                 SIMD2(0.0, 0.0), SIMD2(0.5, 0.0), SIMD2(1.0, 0.0),
                 SIMD2(0.0, 0.5), SIMD2(0.5, 0.5), SIMD2(1.0, 0.5),
-                SIMD2(0.0, 1.0), SIMD2(0.5, 1.0), SIMD2(1.0, 1.0)
+                SIMD2(0.0, 1.0), SIMD2(0.5, 1.0), SIMD2(1.0, 1.0),
             ],
             colors: [
                 Color.pawBackground, Color.pawPrimary.opacity(0.3), Color.pawBackground,
                 Color.pawPrimary.opacity(0.2), Color.pawSecondary.opacity(0.3), Color.pawAccent.opacity(0.2),
-                Color.pawBackground, Color.pawSecondary.opacity(0.2), Color.pawBackground
+                Color.pawBackground, Color.pawSecondary.opacity(0.2), Color.pawBackground,
             ],
             smoothsColors: true
         )

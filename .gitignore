@@ -24,6 +24,8 @@ Pods/
 *.plist.production
 config/secrets.swift
 **/APIKeys.swift
+GoogleService-Info.plist
+**/GoogleService-Info.plist
 
 # macOS
 .DS_Store

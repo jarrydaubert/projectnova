@@ -23,7 +23,7 @@ struct ProjectsView: View {
     // Grid layout
     private let columns = [
         GridItem(.flexible(), spacing: 12),
-        GridItem(.flexible(), spacing: 12)
+        GridItem(.flexible(), spacing: 12),
     ]
 
     var body: some View {
@@ -218,7 +218,7 @@ struct ProjectCard: View {
             ZStack {
                 RoundedRectangle(cornerRadius: 12)
                     .fill(Color.pawCard)
-                    .aspectRatio(16/9, contentMode: .fit)
+                    .aspectRatio(16 / 9, contentMode: .fit)
 
                 Image(systemName: "play.circle.fill")
                     .font(.system(size: 36))

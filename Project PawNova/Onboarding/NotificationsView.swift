@@ -18,7 +18,7 @@ struct NotificationsView: View {
     private let benefits = [
         ("bell.badge.fill", "Video Ready", "Get notified when your video finishes generating"),
         ("star.fill", "New Features", "Be the first to know about new AI models"),
-        ("gift.fill", "Special Offers", "Exclusive discounts and bonus credits")
+        ("gift.fill", "Special Offers", "Exclusive discounts and bonus credits"),
     ]
 
     var body: some View {
@@ -149,7 +149,7 @@ struct NotificationsView: View {
         isRequesting = true
         Haptic.medium()
 
-        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { granted, _ in
+        UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .badge, .sound]) { _, _ in
             DispatchQueue.main.async {
                 isRequesting = false
                 onboarding.notificationsRequested = true

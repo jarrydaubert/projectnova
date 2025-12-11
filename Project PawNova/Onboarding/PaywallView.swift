@@ -60,7 +60,7 @@ struct PaywallView: View {
         ("wand.and.stars", "Unlimited AI video generation"),
         ("film.stack", "Access Veo 3 & Sora 2 models"),
         ("square.and.arrow.up", "Export in Full HD"),
-        ("sparkles", "Priority processing")
+        ("sparkles", "Priority processing"),
     ]
 
     var body: some View {

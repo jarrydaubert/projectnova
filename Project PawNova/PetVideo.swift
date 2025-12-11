@@ -97,7 +97,7 @@ final class PetVideo {
             [
                 PetVideo(prompt: "My cat as a space explorer"),
                 PetVideo(prompt: "Golden retriever surfing a wave"),
-                PetVideo(prompt: "Parrot piloting a tiny drone")
+                PetVideo(prompt: "Parrot piloting a tiny drone"),
             ]
         }
     #endif

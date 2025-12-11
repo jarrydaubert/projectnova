@@ -63,7 +63,7 @@ struct ShowcaseView: View {
             videoURL: nil,
             thumbnailIcon: "bolt.fill",
             gradient: [.red, .orange]
-        )
+        ),
     ]
 
     var body: some View {

@@ -85,12 +85,18 @@ identifier_name:
     - y
     - i
     - j
+    - r  # RGB color components
+    - g
+    - b
+    - a  # Alpha channel
+    - s  # Seconds (time formatting)
 
 type_name:
   min_length: 3
   max_length: 50
   excluded:
     - URL
+    - Project_PawNovaApp  # Xcode-generated app entry point
 
 line_length:
   warning: 120

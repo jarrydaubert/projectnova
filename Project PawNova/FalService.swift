@@ -195,7 +195,11 @@ final class FalService {
     // MARK: - Demo Mode (Free Testing)
     /// Set to true to use mock generations (no API calls, $0 cost)
     /// Set to false to use real fal.ai API (requires credits)
-    var demoMode: Bool = true  // Default to demo for testing
+    #if DEBUG
+    var demoMode: Bool = true  // Demo mode for development/testing
+    #else
+    var demoMode: Bool = false  // Real API for production
+    #endif
 
     // TODO: Move to server-side proxy for production
     // Get your key at: https://fal.ai/dashboard/keys
@@ -244,7 +248,9 @@ final class FalService {
         }
 
         // fal.ai uses a REST upload endpoint
-        let uploadURL = URL(string: "https://fal.ai/api/storage/upload/initiate")!
+        guard let uploadURL = URL(string: "https://fal.ai/api/storage/upload/initiate") else {
+            throw FalServiceError.invalidResponse
+        }
         var request = URLRequest(url: uploadURL)
         request.httpMethod = "POST"
         request.setValue("Key \(apiKey)", forHTTPHeaderField: "Authorization")
@@ -253,7 +259,7 @@ final class FalService {
         // Request upload URL
         let initiateBody: [String: Any] = [
             "file_name": "pet_photo_\(UUID().uuidString).jpg",
-            "content_type": "image/jpeg"
+            "content_type": "image/jpeg",
         ]
         request.httpBody = try JSONSerialization.data(withJSONObject: initiateBody)
 
@@ -355,7 +361,9 @@ final class FalService {
         logger.info("✅ Cost: \(model.credits) credits, Duration: \(model.duration)")
 
         // Submit job
-        let submitURL = URL(string: "\(baseURL)/\(endpoint)")!
+        guard let submitURL = URL(string: "\(baseURL)/\(endpoint)") else {
+            throw FalServiceError.invalidResponse
+        }
         var submitRequest = URLRequest(url: submitURL)
         submitRequest.httpMethod = "POST"
         submitRequest.setValue("Key \(apiKey)", forHTTPHeaderField: "Authorization")
@@ -369,21 +377,21 @@ final class FalService {
                 "image_url": imageUrl as Any,
                 "duration": 8,
                 "aspect_ratio": aspectRatio,
-                "audio": model.supportsAudio
+                "audio": model.supportsAudio,
             ]
         case .kling25:
             requestBody = [
                 "prompt": prompt,
                 "image_url": imageUrl as Any,
                 "duration": 5,
-                "aspect_ratio": aspectRatio
+                "aspect_ratio": aspectRatio,
             ]
         case .hailuo02:
             requestBody = [
                 "prompt": prompt,
                 "image_url": imageUrl as Any,
                 "duration": "6",
-                "resolution": "1080p"
+                "resolution": "1080p",
             ]
         }
 
@@ -434,7 +442,9 @@ final class FalService {
         logger.info("✅ Using API key: \(String(self.apiKey.prefix(8)))...")
 
         // Submit job
-        let submitURL = URL(string: "\(baseURL)/\(endpoint)")!
+        guard let submitURL = URL(string: "\(baseURL)/\(endpoint)") else {
+            throw FalServiceError.invalidResponse
+        }
         var submitRequest = URLRequest(url: submitURL)
         submitRequest.httpMethod = "POST"
         submitRequest.setValue("Key \(apiKey)", forHTTPHeaderField: "Authorization")
@@ -477,7 +487,9 @@ final class FalService {
         let request = ImageToVideoRequest(imageUrl: imageUrl, prompt: prompt)
 
         // Submit job
-        let submitURL = URL(string: "\(baseURL)/\(endpoint)")!
+        guard let submitURL = URL(string: "\(baseURL)/\(endpoint)") else {
+            throw FalServiceError.invalidResponse
+        }
         var submitRequest = URLRequest(url: submitURL)
         submitRequest.httpMethod = "POST"
         submitRequest.setValue("Key \(apiKey)", forHTTPHeaderField: "Authorization")
@@ -509,7 +521,9 @@ final class FalService {
     // MARK: - Private Helpers
 
     private func pollForResult(requestId: String, endpoint: String) async throws -> String {
-        let statusURL = URL(string: "\(baseURL)/\(endpoint)/requests/\(requestId)")!
+        guard let statusURL = URL(string: "\(baseURL)/\(endpoint)/requests/\(requestId)") else {
+            throw FalServiceError.invalidResponse
+        }
         var statusRequest = URLRequest(url: statusURL)
         statusRequest.setValue("Key \(apiKey)", forHTTPHeaderField: "Authorization")
 
@@ -545,7 +559,9 @@ final class FalService {
     }
 
     private func pollForVideoResult(requestId: String, endpoint: String) async throws -> String {
-        let statusURL = URL(string: "\(baseURL)/\(endpoint)/requests/\(requestId)")!
+        guard let statusURL = URL(string: "\(baseURL)/\(endpoint)/requests/\(requestId)") else {
+            throw FalServiceError.invalidResponse
+        }
         var statusRequest = URLRequest(url: statusURL)
         statusRequest.setValue("Key \(apiKey)", forHTTPHeaderField: "Authorization")
 

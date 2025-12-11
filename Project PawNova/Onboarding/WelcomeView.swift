@@ -134,7 +134,7 @@ struct WelcomeView: View {
                 colors: [
                     Color.pawPrimary.opacity(0.3),
                     Color.pawBackground,
-                    Color.pawSecondary.opacity(0.2)
+                    Color.pawSecondary.opacity(0.2),
                 ],
                 startPoint: animateGradient ? .topLeading : .bottomTrailing,
                 endPoint: animateGradient ? .bottomTrailing : .topLeading

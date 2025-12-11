@@ -38,31 +38,31 @@ final class Project_PawNovaUITestsLaunchTests: XCTestCase {
         app.launchArguments = ["-skipOnboarding", "YES"]
         app.launch()
 
-        // Wait for main app to appear
-        let createTab = app.tabBars.buttons["Create"]
-        _ = createTab.waitForExistence(timeout: 5)
+        // Wait for main app to appear (Projects is now default tab)
+        let projectsTab = app.tabBars.buttons["Projects"]
+        _ = projectsTab.waitForExistence(timeout: 5)
 
         let attachment = XCTAttachment(screenshot: app.screenshot())
-        attachment.name = "Main App - Create Tab"
+        attachment.name = "Main App - Projects Tab"
         attachment.lifetime = .keepAlways
         add(attachment)
     }
 
     @MainActor
-    func testLaunchLibraryTab() throws {
+    func testLaunchCreateTab() throws {
         let app = XCUIApplication()
         app.launchArguments = ["-skipOnboarding", "YES"]
         app.launch()
 
-        // Navigate to Library
-        let libraryTab = app.tabBars.buttons["Library"]
-        _ = libraryTab.waitForExistence(timeout: 5)
-        libraryTab.tap()
+        // Navigate to Create
+        let createTab = app.tabBars.buttons["Create"]
+        _ = createTab.waitForExistence(timeout: 5)
+        createTab.tap()
 
         sleep(1) // Wait for animation
 
         let attachment = XCTAttachment(screenshot: app.screenshot())
-        attachment.name = "Main App - Library Tab"
+        attachment.name = "Main App - Create Tab"
         attachment.lifetime = .keepAlways
         add(attachment)
     }

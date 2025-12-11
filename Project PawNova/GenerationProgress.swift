@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import ActivityKit
 
 // MARK: - Generation Status
 
@@ -81,6 +82,7 @@ final class GenerationProgressManager {
     private init() {}
 
     /// Generate video with real-time progress updates
+    /// Automatically starts a Live Activity for Dynamic Island/Lock Screen progress
     func generateWithProgress(
         prompt: String,
         model: AIModel,
@@ -90,6 +92,12 @@ final class GenerationProgressManager {
         return AsyncThrowingStream { continuation in
             Task { @MainActor in
                 do {
+                    // Start Live Activity for Dynamic Island/Lock Screen
+                    _ = try? await LiveActivityManager.shared.startActivity(
+                        prompt: prompt,
+                        model: model
+                    )
+
                     // Update status: Submitting
                     self.updateStatus(.submitting)
                     continuation.yield(.submitting)
@@ -124,11 +132,17 @@ final class GenerationProgressManager {
                     continuation.yield(.completed(videoURL: videoURL))
                     continuation.finish()
 
+                    // Complete Live Activity with success
+                    await LiveActivityManager.shared.completeActivity(thumbnailURL: videoURL)
+
                 } catch {
                     let errorMessage = error.localizedDescription
                     self.updateStatus(.failed(error: errorMessage))
                     continuation.yield(.failed(error: errorMessage))
                     continuation.finish(throwing: error)
+
+                    // End Live Activity with error
+                    await LiveActivityManager.shared.failActivity(error: errorMessage)
                 }
             }
         }
@@ -146,10 +160,12 @@ final class GenerationProgressManager {
         // Simulate queued
         updateStatus(.queued(position: 2))
         continuation.yield(.queued(position: 2))
+        await LiveActivityManager.shared.updateProgress(0.05, stage: "In queue (position 2)...")
         try await Task.sleep(nanoseconds: 500_000_000)
 
         updateStatus(.queued(position: 1))
         continuation.yield(.queued(position: 1))
+        await LiveActivityManager.shared.updateProgress(0.1, stage: "In queue (position 1)...")
         try await Task.sleep(nanoseconds: 500_000_000)
 
         // Simulate processing stages
@@ -166,12 +182,14 @@ final class GenerationProgressManager {
         for (progress, stage) in stages {
             updateStatus(.processing(progress: progress, stage: stage))
             continuation.yield(.processing(progress: progress, stage: stage))
+            await LiveActivityManager.shared.updateProgress(progress, stage: stage)
             try await Task.sleep(nanoseconds: 400_000_000)
         }
 
         // Simulate download
         updateStatus(.downloading)
         continuation.yield(.downloading)
+        await LiveActivityManager.shared.updateProgress(0.98, stage: "Downloading video...")
         try await Task.sleep(nanoseconds: 300_000_000)
 
         // Complete with mock URL
@@ -179,6 +197,9 @@ final class GenerationProgressManager {
         updateStatus(.completed(videoURL: mockURL))
         continuation.yield(.completed(videoURL: mockURL))
         continuation.finish()
+
+        // Complete Live Activity
+        await LiveActivityManager.shared.completeActivity(thumbnailURL: mockURL)
     }
 
     private func generateWithPolling(

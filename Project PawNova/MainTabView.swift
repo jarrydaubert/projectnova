@@ -6,29 +6,28 @@ struct MainTabView: View {
     /// Using @State with @Observable (iOS 17+) for efficient updates.
     @State private var router = TabRouter()
 
+    /// Detect if running on iPad for adaptive layout
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+
     var body: some View {
         TabView(selection: $router.selectedTab) {
             // Projects Tab (Home/Landing)
-            ProjectsView()
-                .tabItem {
-                    Label(AppTab.projects.title, systemImage: AppTab.projects.icon)
-                }
-                .tag(AppTab.projects)
+            Tab(AppTab.projects.title, systemImage: AppTab.projects.icon, value: AppTab.projects) {
+                ProjectsView()
+            }
 
             // Create Tab
-            ContentView()
-                .tabItem {
-                    Label(AppTab.create.title, systemImage: AppTab.create.icon)
-                }
-                .tag(AppTab.create)
+            Tab(AppTab.create.title, systemImage: AppTab.create.icon, value: AppTab.create) {
+                ContentView()
+            }
 
             // Settings Tab
-            SettingsView()
-                .tabItem {
-                    Label(AppTab.settings.title, systemImage: AppTab.settings.icon)
-                }
-                .tag(AppTab.settings)
+            Tab(AppTab.settings.title, systemImage: AppTab.settings.icon, value: AppTab.settings) {
+                SettingsView()
+            }
         }
+        // iOS 18: Floating tab bar that transforms to sidebar on iPad
+        .tabViewStyle(.sidebarAdaptable)
         .tint(.pawPrimary)
         .preferredColorScheme(.dark)
         .environment(router)  // iOS 17+ environment injection for @Observable

@@ -2,14 +2,17 @@
 
 ## Project Overview
 
-PawNova is an iOS 18+ app that generates AI pet videos using fal.ai. Supports 4 AI models: Veo 3 Fast, Veo 3 Pro (Google), Kling 2.5 (Kuaishou), Hailuo-02 (MiniMax). Three-tab navigation: Create, Library, Settings. Demo mode enabled by default for free testing.
+PawNova is an iOS 18+ app that generates AI pet videos using fal.ai. Supports 4 AI models: Veo 3 Fast, Veo 3 Pro (Google), Kling 2.5 (Kuaishou), Hailuo-02 (MiniMax). Three-tab navigation: Projects, Create, Settings. Demo mode enabled by default for free testing.
 
 ## Tech Stack
 
-- **SwiftUI** - Declarative UI
-- **SwiftData** - Persistence (@Model, @Query)
+- **SwiftUI** - Declarative UI (iOS 18 features: MeshGradient, floating tab bar)
+- **SwiftData** - Persistence (@Model, @Query, #Index, #Unique)
 - **StoreKit 2** - Subscriptions & credit packs
 - **TipKit** - Contextual tips
+- **WidgetKit** - Interactive home screen widgets
+- **ActivityKit** - Live Activities for Dynamic Island & Lock Screen
+- **Foundation Models** - On-device AI prompt enhancement (iOS 18.1+)
 - **async/await** - Concurrency
 - **AVKit** - Video playback
 - **os.Logger** - Logging (not print)
@@ -141,18 +144,22 @@ onboarding.nextStep()
 
 ## Testing
 
-**44 tests** across 6 test suites:
-- `OnboardingTests` - 9 tests (flow state, navigation, reset)
-- `FalServiceTests` - 10 tests (AI models, errors, prompt enhancement)
+**81 tests** across 10 test suites:
+- `OnboardingTests` - 12 tests (flow state, navigation, reset)
+- `FalServiceTests` - 16 tests (AI models, errors, prompt enhancement, demo mode)
 - `PetVideoTests` - 11 tests (model logic, SwiftData)
 - `PersistenceControllerTests` - 4 tests (container, singleton)
 - `Project_PawNovaTests` - 4 tests (integration workflows)
-- UI Tests - 6 tests (launch, performance)
+- `SecureStorageTests` - 12 tests (Keychain operations)
+- `StoreServiceTests` - 6 tests (StoreKit 2 purchases)
+- `ErrorHandlingTests` - 10 tests (error types, network monitor)
+- UI Tests - 2 tests (launch, performance)
+- UI Launch Tests - 4 tests (screenshot capture)
 
 **Key patterns:**
 - Use `PersistenceController(inMemory: true)` for test isolation
 - SwiftData tests need `@MainActor`
-- `FalService.shared` for prompt enhancement tests
+- Use `FalService.shared` singleton in tests (avoid creating new instances to prevent URLSession deallocation crashes)
 
 ## Dev Testing
 
@@ -280,6 +287,80 @@ Task.detached { [weak self] in
 - Use Keychain (SecureStorage) for credits, subscription, tokens
 - Never force-unwrap URLs from external sources
 - Clean up AVPlayer in onDisappear
+
+## iOS 18 Features
+
+### Live Activities (ActivityKit)
+```swift
+// Start Live Activity when video generation begins
+let attributes = VideoGenerationAttributes(prompt: prompt, model: model)
+let state = VideoGenerationAttributes.ContentState(progress: 0, stage: "Starting...")
+let activity = try Activity.request(attributes: attributes, content: .init(state: state, staleDate: nil))
+
+// Update progress
+await activity.update(using: .init(progress: 0.5, stage: "Rendering..."))
+
+// End when complete
+await activity.end(using: .init(progress: 1.0, stage: "Complete!"), dismissalPolicy: .after(.now + 5))
+```
+
+### Interactive Widgets (WidgetKit)
+```swift
+// Widget shows recent videos, tap to open app
+struct PawNovaWidget: Widget {
+    var body: some WidgetConfiguration {
+        AppIntentConfiguration(kind: "RecentVideos", intent: OpenAppIntent.self, provider: Provider()) { entry in
+            WidgetView(entry: entry)
+        }
+    }
+}
+
+// App Group for shared data: group.com.pawnova.shared
+```
+
+### Foundation Models (iOS 18.1+)
+```swift
+// On-device prompt enhancement
+import FoundationModels
+
+@Generable
+struct EnhancedPrompt {
+    let cinematicPrompt: String
+    let suggestedStyle: String
+}
+
+let session = LanguageModelSession()
+let enhanced = try await session.generate(EnhancedPrompt.self, from: userPrompt)
+```
+
+### SwiftData iOS 18
+```swift
+@Model
+final class PetVideo {
+    #Index<PetVideo>([\.prompt], [\.timestamp])
+    #Unique<PetVideo>([\.generatedURL])  // Prevent duplicate videos
+
+    var prompt: String
+    var timestamp: Date
+    var generatedURL: URL?
+}
+```
+
+### SwiftUI iOS 18
+```swift
+// MeshGradient for rich backgrounds
+MeshGradient(
+    width: 3, height: 3,
+    points: [...],
+    colors: [.pawPrimary, .pawSecondary, .pawAccent, ...]
+)
+
+// Floating tab bar with sidebar (iPad)
+TabView {
+    // tabs
+}
+.tabViewStyle(.sidebarAdaptable)
+```
 
 ## Documentation
 

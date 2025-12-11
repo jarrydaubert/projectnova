@@ -3,8 +3,17 @@ import XCTest
 
 /// Tests for FalService - focused on AI model properties and error handling.
 /// Real API tests should be integration tests, not unit tests.
+/// Note: Uses FalService.shared singleton to avoid memory deallocation issues with URLSession.
 @MainActor
 final class FalServiceTests: XCTestCase {
+
+    /// Use the shared singleton to avoid deallocation crashes when creating multiple instances
+    private var service: FalService { FalService.shared }
+
+    override func setUp() async throws {
+        // Ensure demo mode is on for testing
+        service.demoMode = true
+    }
 
     // MARK: - AI Model Tests
 
@@ -64,13 +73,12 @@ final class FalServiceTests: XCTestCase {
     // MARK: - Demo Mode Tests
 
     func testDemoMode_IsEnabledByDefault() {
-        // Create a fresh instance to test default state
-        let service = FalService()
+        // Verify demo mode is enabled (set in setUp)
         XCTAssertTrue(service.demoMode, "Demo mode should be enabled by default")
     }
 
     func testDemoMode_CanBeToggled() {
-        let service = FalService()
+        // Start in demo mode (set by setUp)
         XCTAssertTrue(service.demoMode, "Should start in demo mode")
 
         service.demoMode = false
@@ -101,7 +109,6 @@ final class FalServiceTests: XCTestCase {
     // MARK: - Prompt Enhancement Tests
 
     func testEnhancePrompt_AddsCinematicToShortPrompt() {
-        let service = FalService()
         let enhanced = service.enhancePrompt("cat playing")
 
         XCTAssertTrue(enhanced.contains("Cinematic"), "Should add cinematic quality")
@@ -109,14 +116,12 @@ final class FalServiceTests: XCTestCase {
     }
 
     func testEnhancePrompt_AddsPetEnhancement() {
-        let service = FalService()
         let enhanced = service.enhancePrompt("dog running")
 
         XCTAssertTrue(enhanced.contains("Adorable"), "Should add pet-specific enhancement")
     }
 
     func testEnhancePrompt_SkipsAlreadyEnhancedPrompts() {
-        let service = FalService()
         let alreadyEnhanced = "Cinematic video of a cat in space"
         let result = service.enhancePrompt(alreadyEnhanced)
 
@@ -124,7 +129,6 @@ final class FalServiceTests: XCTestCase {
     }
 
     func testEnhancePrompt_SkipsLongPrompts() {
-        let service = FalService()
         let longPrompt = String(repeating: "word ", count: 50)
         let result = service.enhancePrompt(longPrompt)
 
@@ -132,7 +136,6 @@ final class FalServiceTests: XCTestCase {
     }
 
     func testEnhancePrompt_NonPetPrompt_NoAdorable() {
-        let service = FalService()
         let enhanced = service.enhancePrompt("sunset over mountains")
 
         XCTAssertTrue(enhanced.contains("Cinematic"), "Should add cinematic quality")

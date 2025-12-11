@@ -79,3 +79,102 @@ extension LinearGradient {
         endPoint: .trailing
     )
 }
+
+// MARK: - iOS 18 MeshGradient
+
+/// Rich 2D mesh gradient for immersive backgrounds (iOS 18+)
+struct PawNovaMeshGradient: View {
+    var animating: Bool = false
+    @State private var phase: CGFloat = 0
+
+    var body: some View {
+        TimelineView(.animation(minimumInterval: 1/30, paused: !animating)) { timeline in
+            MeshGradient(
+                width: 3,
+                height: 3,
+                points: meshPoints(phase: animating ? phase : 0),
+                colors: [
+                    // Top row
+                    Color.pawBackground,
+                    Color.pawPrimary.opacity(0.6),
+                    Color.pawBackground,
+                    // Middle row
+                    Color.pawPrimary.opacity(0.4),
+                    Color.pawSecondary.opacity(0.5),
+                    Color.pawAccent.opacity(0.4),
+                    // Bottom row
+                    Color.pawBackground,
+                    Color.pawSecondary.opacity(0.3),
+                    Color.pawBackground
+                ],
+                smoothsColors: true
+            )
+            .onChange(of: timeline.date) {
+                if animating {
+                    withAnimation(.linear(duration: 0.033)) {
+                        phase += 0.01
+                    }
+                }
+            }
+        }
+        .ignoresSafeArea()
+    }
+
+    private func meshPoints(phase: CGFloat) -> [SIMD2<Float>] {
+        let offset = Float(sin(phase * .pi * 2) * 0.05)
+        return [
+            // Top row
+            SIMD2(0.0, 0.0),
+            SIMD2(0.5 + offset, 0.0),
+            SIMD2(1.0, 0.0),
+            // Middle row
+            SIMD2(0.0, 0.5 - offset),
+            SIMD2(0.5, 0.5),
+            SIMD2(1.0, 0.5 + offset),
+            // Bottom row
+            SIMD2(0.0, 1.0),
+            SIMD2(0.5 - offset, 1.0),
+            SIMD2(1.0, 1.0)
+        ]
+    }
+}
+
+/// Static mesh gradient for lighter weight usage
+struct PawNovaStaticMeshGradient: View {
+    var body: some View {
+        MeshGradient(
+            width: 3,
+            height: 3,
+            points: [
+                SIMD2(0.0, 0.0), SIMD2(0.5, 0.0), SIMD2(1.0, 0.0),
+                SIMD2(0.0, 0.5), SIMD2(0.5, 0.5), SIMD2(1.0, 0.5),
+                SIMD2(0.0, 1.0), SIMD2(0.5, 1.0), SIMD2(1.0, 1.0)
+            ],
+            colors: [
+                Color.pawBackground, Color.pawPrimary.opacity(0.3), Color.pawBackground,
+                Color.pawPrimary.opacity(0.2), Color.pawSecondary.opacity(0.3), Color.pawAccent.opacity(0.2),
+                Color.pawBackground, Color.pawSecondary.opacity(0.2), Color.pawBackground
+            ],
+            smoothsColors: true
+        )
+        .ignoresSafeArea()
+    }
+}
+
+#Preview("Animated Mesh") {
+    ZStack {
+        PawNovaMeshGradient(animating: true)
+        Text("PawNova")
+            .font(.largeTitle.bold())
+            .foregroundColor(.white)
+    }
+}
+
+#Preview("Static Mesh") {
+    ZStack {
+        PawNovaStaticMeshGradient()
+        Text("PawNova")
+            .font(.largeTitle.bold())
+            .foregroundColor(.white)
+    }
+}

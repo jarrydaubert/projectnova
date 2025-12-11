@@ -15,29 +15,11 @@ struct SplashView: View {
 
     @State private var logoOpacity: Double = 0
     @State private var textOpacity: Double = 0
-    @State private var glowPulse: Bool = false
 
     var body: some View {
         ZStack {
-            Color.pawBackground.ignoresSafeArea()
-
-            // Aurora glow background
-            Circle()
-                .fill(
-                    RadialGradient(
-                        colors: [
-                            Color.pawPrimary.opacity(0.4),
-                            Color.pawSecondary.opacity(0.2),
-                            Color.clear
-                        ],
-                        center: .center,
-                        startRadius: 0,
-                        endRadius: 200
-                    )
-                )
-                .frame(width: 400, height: 400)
-                .scaleEffect(glowPulse ? 1.1 : 0.9)
-                .opacity(logoOpacity)
+            // iOS 18: Animated mesh gradient background
+            PawNovaMeshGradient(animating: true)
 
             VStack(spacing: 24) {
                 // Animated video logo
@@ -78,12 +60,7 @@ struct SplashView: View {
             textOpacity = 1.0
         }
 
-        // Phase 3: Gentle glow pulse
-        withAnimation(.easeInOut(duration: 1.5).repeatForever(autoreverses: true)) {
-            glowPulse = true
-        }
-
-        // Phase 4: Advance to welcome after video plays once
+        // Phase 3: Advance to welcome after video plays once
         DispatchQueue.main.asyncAfter(deadline: .now() + 4.0) {
             onboarding.nextStep()
         }

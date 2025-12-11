@@ -12,9 +12,14 @@ import SwiftData
 /// Stores the user's prompt, an optional generated video URL, the creation timestamp, and optional source photo URL.
 @Model
 final class PetVideo {
-    // Single #Index macro: Separate indexes for prompt (text searches) and timestamp (sorts/queries).
-    // iOS 18+/Swift 6 only—combine all indexes here.
+    // MARK: - iOS 18 Schema Macros
+
+    /// Indexes for fast queries: prompt (text searches) and timestamp (sorts/queries).
     #Index<PetVideo>([\.prompt], [\.timestamp])
+
+    /// Unique constraint: Prevent duplicate videos with the same URL.
+    /// Uses compound uniqueness on generatedURL to ensure no duplicates in the database.
+    #Unique<PetVideo>([\.generatedURL])
 
     /// The user's text prompt that describes the desired video.
     var prompt: String

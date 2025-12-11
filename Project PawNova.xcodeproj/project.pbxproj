@@ -7,11 +7,21 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AE4738372EEADD6D00AF1425 /* WidgetKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE4738362EEADD6D00AF1425 /* WidgetKit.framework */; };
+		AE4738392EEADD6D00AF1425 /* SwiftUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AE4738382EEADD6D00AF1425 /* SwiftUI.framework */; };
+		AE4738462EEADD6F00AF1425 /* PawNovaExtension.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = AE4738342EEADD6D00AF1425 /* PawNovaExtension.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
 		AEB7456A2EE86A6E00CF2778 /* FirebaseAnalytics in Frameworks */ = {isa = PBXBuildFile; productRef = AEB745692EE86A6E00CF2778 /* FirebaseAnalytics */; };
 		AEB7456C2EE86A6E00CF2778 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = AEB7456B2EE86A6E00CF2778 /* FirebaseCrashlytics */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		AE4738442EEADD6F00AF1425 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = AE95F7332EE1F23C000822C0 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = AE4738332EEADD6D00AF1425;
+			remoteInfo = PawNovaExtension;
+		};
 		AE95F74B2EE1F23D000822C0 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = AE95F7332EE1F23C000822C0 /* Project object */;
@@ -28,14 +38,49 @@
 		};
 /* End PBXContainerItemProxy section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		AE47384B2EEADD6F00AF1425 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				AE4738462EEADD6F00AF1425 /* PawNovaExtension.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
+		AE4738342EEADD6D00AF1425 /* PawNovaExtension.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = PawNovaExtension.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		AE4738362EEADD6D00AF1425 /* WidgetKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WidgetKit.framework; path = /System/Library/Frameworks/WidgetKit.framework; sourceTree = "<absolute>"; };
+		AE4738382EEADD6D00AF1425 /* SwiftUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SwiftUI.framework; path = /System/Library/Frameworks/SwiftUI.framework; sourceTree = "<absolute>"; };
 		AE95F73B2EE1F23C000822C0 /* Project PawNova.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Project PawNova.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE95F74A2EE1F23D000822C0 /* Project PawNovaTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Project PawNovaTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AE95F7542EE1F23D000822C0 /* Project PawNovaUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Project PawNovaUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AED1541D2EE77A4D0000A398 /* Project PawNova.xctestplan */ = {isa = PBXFileReference; lastKnownFileType = text; path = "Project PawNova.xctestplan"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		AE4738472EEADD6F00AF1425 /* Exceptions for "PawNova" folder in "PawNovaExtension" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = AE4738332EEADD6D00AF1425 /* PawNovaExtension */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
+		AE47383A2EEADD6D00AF1425 /* PawNova */ = {
+			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				AE4738472EEADD6F00AF1425 /* Exceptions for "PawNova" folder in "PawNovaExtension" target */,
+			);
+			path = PawNova;
+			sourceTree = "<group>";
+		};
 		AE95F73D2EE1F23C000822C0 /* Project PawNova */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			path = "Project PawNova";
@@ -54,6 +99,15 @@
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		AE4738312EEADD6D00AF1425 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				AE4738392EEADD6D00AF1425 /* SwiftUI.framework in Frameworks */,
+				AE4738372EEADD6D00AF1425 /* WidgetKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AE95F7382EE1F23C000822C0 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -80,6 +134,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AE4738352EEADD6D00AF1425 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AE4738362EEADD6D00AF1425 /* WidgetKit.framework */,
+				AE4738382EEADD6D00AF1425 /* SwiftUI.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 		AE95F7322EE1F23C000822C0 = {
 			isa = PBXGroup;
 			children = (
@@ -87,6 +150,8 @@
 				AE95F73D2EE1F23C000822C0 /* Project PawNova */,
 				AE95F74D2EE1F23D000822C0 /* Project PawNovaTests */,
 				AE95F7572EE1F23D000822C0 /* Project PawNovaUITests */,
+				AE47383A2EEADD6D00AF1425 /* PawNova */,
+				AE4738352EEADD6D00AF1425 /* Frameworks */,
 				AE95F73C2EE1F23C000822C0 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -97,6 +162,7 @@
 				AE95F73B2EE1F23C000822C0 /* Project PawNova.app */,
 				AE95F74A2EE1F23D000822C0 /* Project PawNovaTests.xctest */,
 				AE95F7542EE1F23D000822C0 /* Project PawNovaUITests.xctest */,
+				AE4738342EEADD6D00AF1425 /* PawNovaExtension.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -104,6 +170,28 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		AE4738332EEADD6D00AF1425 /* PawNovaExtension */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = AE4738482EEADD6F00AF1425 /* Build configuration list for PBXNativeTarget "PawNovaExtension" */;
+			buildPhases = (
+				AE4738302EEADD6D00AF1425 /* Sources */,
+				AE4738312EEADD6D00AF1425 /* Frameworks */,
+				AE4738322EEADD6D00AF1425 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			fileSystemSynchronizedGroups = (
+				AE47383A2EEADD6D00AF1425 /* PawNova */,
+			);
+			name = PawNovaExtension;
+			packageProductDependencies = (
+			);
+			productName = PawNovaExtension;
+			productReference = AE4738342EEADD6D00AF1425 /* PawNovaExtension.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
 		AE95F73A2EE1F23C000822C0 /* Project PawNova */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = AE95F75E2EE1F23D000822C0 /* Build configuration list for PBXNativeTarget "Project PawNova" */;
@@ -111,10 +199,12 @@
 				AE95F7372EE1F23C000822C0 /* Sources */,
 				AE95F7382EE1F23C000822C0 /* Frameworks */,
 				AE95F7392EE1F23C000822C0 /* Resources */,
+				AE47384B2EEADD6F00AF1425 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				AE4738452EEADD6F00AF1425 /* PBXTargetDependency */,
 			);
 			fileSystemSynchronizedGroups = (
 				AE95F73D2EE1F23C000822C0 /* Project PawNova */,
@@ -184,6 +274,9 @@
 				LastSwiftUpdateCheck = 2610;
 				LastUpgradeCheck = 2610;
 				TargetAttributes = {
+					AE4738332EEADD6D00AF1425 = {
+						CreatedOnToolsVersion = 26.1.1;
+					};
 					AE95F73A2EE1F23C000822C0 = {
 						CreatedOnToolsVersion = 26.1.1;
 					};
@@ -217,11 +310,19 @@
 				AE95F73A2EE1F23C000822C0 /* Project PawNova */,
 				AE95F7492EE1F23D000822C0 /* Project PawNovaTests */,
 				AE95F7532EE1F23D000822C0 /* Project PawNovaUITests */,
+				AE4738332EEADD6D00AF1425 /* PawNovaExtension */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		AE4738322EEADD6D00AF1425 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AE95F7392EE1F23C000822C0 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -246,6 +347,13 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		AE4738302EEADD6D00AF1425 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		AE95F7372EE1F23C000822C0 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -270,6 +378,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		AE4738452EEADD6F00AF1425 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = AE4738332EEADD6D00AF1425 /* PawNovaExtension */;
+			targetProxy = AE4738442EEADD6F00AF1425 /* PBXContainerItemProxy */;
+		};
 		AE95F74C2EE1F23D000822C0 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			target = AE95F73A2EE1F23C000822C0 /* Project PawNova */;
@@ -283,6 +396,90 @@
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		AE4738492EEADD6F00AF1425 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YZK42GTX8N;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PawNova/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = PawNova;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.jarrydaubert.Project-PawNova.PawNova";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 26.1;
+			};
+			name = Debug;
+		};
+		AE47384A2EEADD6F00AF1425 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME = WidgetBackground;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = YZK42GTX8N;
+				ENABLE_APP_SANDBOX = YES;
+				ENABLE_HARDENED_RUNTIME = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = PawNova/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = PawNova;
+				INFOPLIST_KEY_NSHumanReadableCopyright = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 26.1;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = (
+					"$(inherited)",
+					"@executable_path/../Frameworks",
+					"@executable_path/../../../../Frameworks",
+				);
+				MACOSX_DEPLOYMENT_TARGET = 26.1;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.jarrydaubert.Project-PawNova.PawNova";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = auto;
+				SKIP_INSTALL = YES;
+				STRING_CATALOG_GENERATE_SYMBOLS = YES;
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SWIFT_APPROACHABLE_CONCURRENCY = YES;
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2,7";
+				XROS_DEPLOYMENT_TARGET = 26.1;
+			};
+			name = Release;
+		};
 		AE95F75C2EE1F23D000822C0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -404,6 +601,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Project PawNova/Project PawNova.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = YZK42GTX8N;
@@ -412,6 +610,8 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = PawNova;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -422,7 +622,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 26.1;
@@ -449,6 +649,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_ENTITLEMENTS = "Project PawNova/Project PawNova.entitlements";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = YZK42GTX8N;
@@ -457,6 +658,8 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = PawNova;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.entertainment";
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -467,7 +670,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.0;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 26.1;
@@ -555,7 +758,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
@@ -580,7 +784,8 @@
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = auto;
 				STRING_CATALOG_GENERATE_SYMBOLS = NO;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator macosx xros xrsimulator";
+				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator xros xrsimulator";
+				SUPPORTS_MACCATALYST = NO;
 				SWIFT_APPROACHABLE_CONCURRENCY = YES;
 				SWIFT_EMIT_LOC_STRINGS = NO;
 				SWIFT_UPCOMING_FEATURE_MEMBER_IMPORT_VISIBILITY = YES;
@@ -594,6 +799,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		AE4738482EEADD6F00AF1425 /* Build configuration list for PBXNativeTarget "PawNovaExtension" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				AE4738492EEADD6F00AF1425 /* Debug */,
+				AE47384A2EEADD6F00AF1425 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		AE95F7362EE1F23C000822C0 /* Build configuration list for PBXProject "Project PawNova" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (

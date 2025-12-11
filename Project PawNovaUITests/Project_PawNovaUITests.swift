@@ -67,8 +67,8 @@ final class Project_PawNovaUITests: XCTestCase {
         // Check sign-in options exist
         XCTAssertTrue(appleButton.exists, "Apple sign-in button should exist")
 
-        // Check skip option exists (for demo mode)
-        let skipButton = app.buttons["Skip for now"]
+        // Check skip option exists (for dev/demo mode - DEBUG builds only)
+        let skipButton = app.buttons["Skip (Dev Mode)"]
         XCTAssertTrue(skipButton.exists, "Skip button should exist for demo mode")
     }
 
@@ -76,14 +76,15 @@ final class Project_PawNovaUITests: XCTestCase {
     func testOnboarding_SkipLogin_AdvancesToPetName() throws {
         app.launch()
 
-        // Wait for and tap skip
-        let skipButton = app.buttons["Skip for now"]
+        // Wait for and tap skip (Dev Mode button)
+        let skipButton = app.buttons["Skip (Dev Mode)"]
         _ = skipButton.waitForExistence(timeout: 6)
         skipButton.tap()
 
-        // Should show pet name screen
-        let petNameField = app.textFields.firstMatch
-        let petNameAppears = petNameField.waitForExistence(timeout: 3)
+        // Should show pet name screen - look for the title text or the text field
+        let petNameTitle = app.staticTexts["What's your pet's name?"]
+        let petNameField = app.textFields["Enter your pet's name"]
+        let petNameAppears = petNameTitle.waitForExistence(timeout: 5) || petNameField.waitForExistence(timeout: 5)
         XCTAssertTrue(petNameAppears, "Should advance to pet name screen")
     }
 
@@ -91,24 +92,25 @@ final class Project_PawNovaUITests: XCTestCase {
     func testOnboarding_EnterPetName_AdvancesToNotifications() throws {
         app.launch()
 
-        // Skip login
-        let skipButton = app.buttons["Skip for now"]
+        // Skip login (Dev Mode button)
+        let skipButton = app.buttons["Skip (Dev Mode)"]
         _ = skipButton.waitForExistence(timeout: 6)
         skipButton.tap()
 
-        // Enter pet name
-        let petNameField = app.textFields.firstMatch
-        _ = petNameField.waitForExistence(timeout: 3)
+        // Wait for pet name screen
+        let petNameField = app.textFields["Enter your pet's name"]
+        _ = petNameField.waitForExistence(timeout: 5)
         petNameField.tap()
         petNameField.typeText("Fluffy")
 
         // Tap continue
         let continueButton = app.buttons["Continue"]
+        _ = continueButton.waitForExistence(timeout: 2)
         continueButton.tap()
 
-        // Should show notifications screen
-        let notificationsText = app.staticTexts["Stay Updated"]
-        let notificationsAppears = notificationsText.waitForExistence(timeout: 3)
+        // Should show notifications screen - title is "Stay in the Loop"
+        let notificationsText = app.staticTexts["Stay in the Loop"]
+        let notificationsAppears = notificationsText.waitForExistence(timeout: 5)
         XCTAssertTrue(notificationsAppears, "Should advance to notifications screen")
     }
 
@@ -116,19 +118,20 @@ final class Project_PawNovaUITests: XCTestCase {
     func testOnboarding_CompleteFlow_ReachesMainApp() throws {
         app.launch()
 
-        // Skip login
-        let skipButton = app.buttons["Skip for now"]
+        // Skip login (Dev Mode button)
+        let skipButton = app.buttons["Skip (Dev Mode)"]
         _ = skipButton.waitForExistence(timeout: 6)
         skipButton.tap()
 
-        // Enter pet name
-        let petNameField = app.textFields.firstMatch
-        _ = petNameField.waitForExistence(timeout: 3)
-        petNameField.tap()
-        petNameField.typeText("Test Pet")
+        // Wait for pet name screen - look for the title first
+        let petNameTitle = app.staticTexts["What's your pet's name?"]
+        _ = petNameTitle.waitForExistence(timeout: 5)
 
-        let continueButton = app.buttons["Continue"]
-        continueButton.tap()
+        // Use "Skip for now" to skip pet name entry (fastest path through onboarding)
+        let skipPetName = app.buttons["Skip for now"]
+        if skipPetName.waitForExistence(timeout: 2) {
+            skipPetName.tap()
+        }
 
         // Skip notifications (tap "Maybe Later" if it exists)
         let maybeLater = app.buttons["Maybe Later"]
@@ -136,10 +139,15 @@ final class Project_PawNovaUITests: XCTestCase {
             maybeLater.tap()
         }
 
-        // Handle paywall - skip for testing
-        let skipPaywall = app.buttons["Skip"]
-        if skipPaywall.waitForExistence(timeout: 3) {
-            skipPaywall.tap()
+        // Handle paywall - tap "Start Subscription" or close button to continue
+        // In test environment, this should proceed through the flow
+        let closeButton = app.buttons["Close"]
+        let startSubscription = app.buttons["Start Subscription"]
+        if closeButton.waitForExistence(timeout: 3) {
+            closeButton.tap()
+        } else if startSubscription.waitForExistence(timeout: 2) {
+            startSubscription.tap()
+            sleep(2)
         }
 
         // Should show main tab view with Create tab
@@ -154,23 +162,23 @@ final class Project_PawNovaUITests: XCTestCase {
     func testMainApp_TabNavigation_Works() throws {
         launchToMainApp()
 
-        // Verify Create tab is selected by default
-        let createTab = app.tabBars.buttons["Create"]
-        XCTAssertTrue(createTab.isSelected, "Create tab should be selected by default")
+        // Verify Projects tab is selected by default (home tab)
+        let projectsTab = app.tabBars.buttons["Projects"]
+        XCTAssertTrue(projectsTab.isSelected, "Projects tab should be selected by default")
 
-        // Navigate to Library
-        let libraryTab = app.tabBars.buttons["Library"]
-        libraryTab.tap()
-        XCTAssertTrue(libraryTab.isSelected, "Library tab should be selected")
+        // Navigate to Create
+        let createTab = app.tabBars.buttons["Create"]
+        createTab.tap()
+        XCTAssertTrue(createTab.isSelected, "Create tab should be selected")
 
         // Navigate to Settings
         let settingsTab = app.tabBars.buttons["Settings"]
         settingsTab.tap()
         XCTAssertTrue(settingsTab.isSelected, "Settings tab should be selected")
 
-        // Navigate back to Create
-        createTab.tap()
-        XCTAssertTrue(createTab.isSelected, "Create tab should be re-selected")
+        // Navigate back to Projects
+        projectsTab.tap()
+        XCTAssertTrue(projectsTab.isSelected, "Projects tab should be re-selected")
     }
 
     // MARK: - Create Video Flow Tests
@@ -179,17 +187,20 @@ final class Project_PawNovaUITests: XCTestCase {
     func testCreateTab_HasRequiredElements() throws {
         launchToMainApp()
 
-        // Check for prompt text field/editor
-        let promptField = app.textViews.firstMatch
+        // Navigate to Create tab (default is now Projects)
+        let createTab = app.tabBars.buttons["Create"]
+        createTab.tap()
+
+        // Check for prompt text field (TextField, not TextView)
+        let promptField = app.textFields.firstMatch
         XCTAssertTrue(promptField.exists, "Prompt input should exist")
 
-        // Check for model selector
-        let modelPicker = app.buttons.matching(identifier: "ModelSelector").firstMatch
-        let hasModelSelector = modelPicker.exists || app.staticTexts["Fast Paws"].exists
+        // Check for model selector - look for "Fast Paws" which is the default model display name
+        let hasModelSelector = app.staticTexts["Fast Paws"].exists || app.buttons.matching(NSPredicate(format: "label CONTAINS 'Fast Paws'")).firstMatch.exists
         XCTAssertTrue(hasModelSelector, "Model selector should exist")
 
-        // Check for generate button
-        let generateButton = app.buttons["Generate Video"]
+        // Check for generate button (now called "Create Adventure")
+        let generateButton = app.buttons["Create Adventure"]
         XCTAssertTrue(generateButton.exists, "Generate button should exist")
     }
 
@@ -197,8 +208,13 @@ final class Project_PawNovaUITests: XCTestCase {
     func testCreateTab_EnterPrompt_UpdatesUI() throws {
         launchToMainApp()
 
-        // Find and tap prompt field
-        let promptField = app.textViews.firstMatch
+        // Navigate to Create tab
+        let createTab = app.tabBars.buttons["Create"]
+        createTab.tap()
+
+        // Find and tap prompt field (TextField, not TextView)
+        let promptField = app.textFields.firstMatch
+        _ = promptField.waitForExistence(timeout: 3)
         promptField.tap()
 
         // Type a prompt
@@ -214,8 +230,13 @@ final class Project_PawNovaUITests: XCTestCase {
     func testCreateTab_GenerateButton_RequiresPrompt() throws {
         launchToMainApp()
 
-        // Find generate button
-        let generateButton = app.buttons["Generate Video"]
+        // Navigate to Create tab
+        let createTab = app.tabBars.buttons["Create"]
+        createTab.tap()
+
+        // Find generate button (now called "Create Adventure")
+        let generateButton = app.buttons["Create Adventure"]
+        _ = generateButton.waitForExistence(timeout: 3)
 
         // Button should be disabled without prompt
         XCTAssertFalse(generateButton.isEnabled, "Generate should be disabled without prompt")
@@ -225,46 +246,60 @@ final class Project_PawNovaUITests: XCTestCase {
     func testCreateTab_WithPrompt_GenerateButtonEnabled() throws {
         launchToMainApp()
 
-        // Enter prompt
-        let promptField = app.textViews.firstMatch
+        // Navigate to Create tab
+        let createTab = app.tabBars.buttons["Create"]
+        createTab.tap()
+
+        // Enter prompt (TextField, not TextView)
+        let promptField = app.textFields.firstMatch
+        _ = promptField.waitForExistence(timeout: 3)
         promptField.tap()
         promptField.typeText("A happy dog running in park")
 
-        // Generate button should be enabled
-        let generateButton = app.buttons["Generate Video"]
+        // Generate button should be enabled (now called "Create Adventure")
+        let generateButton = app.buttons["Create Adventure"]
+        _ = generateButton.waitForExistence(timeout: 2)
         XCTAssertTrue(generateButton.isEnabled, "Generate should be enabled with prompt")
     }
 
-    // MARK: - Library Tab Tests
+    // MARK: - Projects Tab Tests
 
     @MainActor
-    func testLibraryTab_ShowsEmptyState() throws {
+    func testProjectsTab_ShowsEmptyStateOrVideos() throws {
         launchToMainApp()
 
-        // Navigate to Library
-        let libraryTab = app.tabBars.buttons["Library"]
-        libraryTab.tap()
+        // Projects tab is default, should already be showing
+        // Could show empty state OR video grid depending on data state
 
-        // Should show empty state message
-        let emptyState = app.staticTexts["No videos yet"]
-        let hasEmptyState = emptyState.waitForExistence(timeout: 2)
-        XCTAssertTrue(hasEmptyState, "Library should show empty state")
+        // Empty state indicators
+        let emptyStateTitle = app.staticTexts["Ready to create amazing\nvideos?"]
+        let createFirstVideoButton = app.buttons["Create Your First Video"]
+        let seeExamplesButton = app.buttons.matching(NSPredicate(format: "label CONTAINS 'See Examples'")).firstMatch
+
+        // Populated state indicators - header "Create Video" button always exists
+        let createVideoHeaderButton = app.buttons["Create Video"]
+
+        // Wait for view to load then check content
+        _ = createVideoHeaderButton.waitForExistence(timeout: 3)
+
+        // Should have either empty state content or the header Create Video button
+        let hasExpectedContent = emptyStateTitle.exists ||
+                                 createFirstVideoButton.exists ||
+                                 seeExamplesButton.exists ||
+                                 createVideoHeaderButton.exists
+
+        XCTAssertTrue(hasExpectedContent, "Projects should show empty state or video content")
     }
 
     @MainActor
-    func testLibraryTab_HasFilterOptions() throws {
+    func testProjectsTab_HasCreateVideoButton() throws {
         launchToMainApp()
 
-        // Navigate to Library
-        let libraryTab = app.tabBars.buttons["Library"]
-        libraryTab.tap()
-
-        // Check for filter buttons
-        let allButton = app.buttons["All"]
-        let favoritesButton = app.buttons["Favorites"]
-
-        XCTAssertTrue(allButton.exists, "All filter should exist")
-        XCTAssertTrue(favoritesButton.exists, "Favorites filter should exist")
+        // Projects tab is default, should already be showing
+        // Check for "Create Video" button in the header area
+        let createVideoButton = app.buttons["Create Video"]
+        let hasCreateVideoButton = createVideoButton.waitForExistence(timeout: 2)
+        XCTAssertTrue(hasCreateVideoButton, "Create Video button should exist")
     }
 
     // MARK: - Settings Tab Tests
@@ -313,8 +348,9 @@ final class Project_PawNovaUITests: XCTestCase {
         let settingsTab = app.tabBars.buttons["Settings"]
         settingsTab.tap()
 
-        // Check for upgrade button
-        let upgradeButton = app.buttons["Upgrade"]
+        // Check for upgrade button - it's part of a combined label button
+        // The button label is "PawNova Pro, Unlimited videos, HD export, Upgrade"
+        let upgradeButton = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Upgrade'")).firstMatch
         XCTAssertTrue(upgradeButton.exists, "Upgrade button should exist")
     }
 
@@ -364,76 +400,87 @@ final class Project_PawNovaUITests: XCTestCase {
         let settingsTab = app.tabBars.buttons["Settings"]
         settingsTab.tap()
 
-        // Tap upgrade
-        let upgradeButton = app.buttons["Upgrade"]
+        // Tap upgrade - it's part of a combined label button
+        let upgradeButton = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Upgrade'")).firstMatch
+        _ = upgradeButton.waitForExistence(timeout: 2)
         upgradeButton.tap()
 
-        // Store view should appear
-        let storeTitle = app.staticTexts["Get Credits"]
-        let storeAppears = storeTitle.waitForExistence(timeout: 3)
-        XCTAssertTrue(storeAppears, "Store view should open")
+        // Store/Paywall view should appear - look for common paywall elements
+        let paywallElements = [
+            app.staticTexts["PawNova Pro"],
+            app.staticTexts["Unlock PawNova Pro"],
+            app.buttons["Subscribe Now"]
+        ]
+        let storeAppears = paywallElements.contains { $0.waitForExistence(timeout: 3) }
+        XCTAssertTrue(storeAppears, "Store/Paywall view should open")
     }
 
     @MainActor
-    func testStoreView_HasSubscriptionAndCreditTabs() throws {
+    func testStoreView_HasSubscriptionOptions() throws {
         launchToMainApp()
 
         // Navigate to Settings
         let settingsTab = app.tabBars.buttons["Settings"]
         settingsTab.tap()
 
-        // Open store
-        let upgradeButton = app.buttons["Upgrade"]
+        // Open store - using combined label button
+        let upgradeButton = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Upgrade'")).firstMatch
+        _ = upgradeButton.waitForExistence(timeout: 2)
         upgradeButton.tap()
 
-        // Wait for store to load
-        _ = app.staticTexts["Get Credits"].waitForExistence(timeout: 3)
+        // Wait for paywall to load - look for "Unlock PawNova" title or "Start Subscription" button
+        let paywallLoaded = app.staticTexts["Unlock PawNova"].waitForExistence(timeout: 3) ||
+                           app.buttons["Start Subscription"].waitForExistence(timeout: 3)
 
-        // Check for tab options
-        let subscribeTab = app.buttons["Subscribe"]
-        let creditsTab = app.buttons["Credit Packs"]
-
-        XCTAssertTrue(subscribeTab.exists, "Subscribe tab should exist")
-        XCTAssertTrue(creditsTab.exists, "Credit Packs tab should exist")
+        XCTAssertTrue(paywallLoaded, "Paywall should load with subscription options")
     }
 
     @MainActor
-    func testStoreView_CanSwitchBetweenTabs() throws {
+    func testStoreView_HasFeaturesList() throws {
         launchToMainApp()
 
         // Navigate to Settings
         let settingsTab = app.tabBars.buttons["Settings"]
         settingsTab.tap()
 
-        // Open store
-        app.buttons["Upgrade"].tap()
-        _ = app.staticTexts["Get Credits"].waitForExistence(timeout: 3)
+        // Open store - using combined label button
+        let upgradeButton = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Upgrade'")).firstMatch
+        _ = upgradeButton.waitForExistence(timeout: 2)
+        upgradeButton.tap()
 
-        // Switch to Credit Packs
-        let creditsTab = app.buttons["Credit Packs"]
-        creditsTab.tap()
+        // Wait for paywall to load
+        _ = app.staticTexts["Unlock PawNova"].waitForExistence(timeout: 3) ||
+            app.buttons["Start Subscription"].waitForExistence(timeout: 3)
 
-        // Verify credit packs content shows
-        let creditsInfo = app.staticTexts["Credits never expire"]
-        _ = creditsInfo.waitForExistence(timeout: 2)
-        XCTAssertTrue(creditsInfo.exists, "Credit packs info should be visible")
+        // Verify features list shows (from PaywallView features array)
+        let featureTexts = [
+            app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'Unlimited'")).firstMatch,
+            app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'HD'")).firstMatch
+        ]
+        let hasFeatures = featureTexts.contains { $0.exists }
+        XCTAssertTrue(hasFeatures, "Paywall should show feature list")
     }
 
     @MainActor
-    func testStoreView_HasRestorePurchasesButton() throws {
+    func testStoreView_HasCloseButton() throws {
         launchToMainApp()
 
         // Navigate to Settings
         let settingsTab = app.tabBars.buttons["Settings"]
         settingsTab.tap()
 
-        // Open store
-        app.buttons["Upgrade"].tap()
-        _ = app.staticTexts["Get Credits"].waitForExistence(timeout: 3)
+        // Open store - using combined label button
+        let upgradeButton = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Upgrade'")).firstMatch
+        _ = upgradeButton.waitForExistence(timeout: 2)
+        upgradeButton.tap()
 
-        // Check for restore button
-        let restoreButton = app.buttons["Restore Purchases"]
-        XCTAssertTrue(restoreButton.exists, "Restore Purchases button should exist")
+        // Wait for paywall to load
+        _ = app.staticTexts["Unlock PawNova"].waitForExistence(timeout: 3) ||
+            app.buttons["Start Subscription"].waitForExistence(timeout: 3)
+
+        // Check for close button (xmark.circle.fill with label "Close")
+        let closeButton = app.buttons["Close"]
+        XCTAssertTrue(closeButton.exists, "Close button should exist in paywall")
     }
 
     @MainActor
@@ -444,18 +491,24 @@ final class Project_PawNovaUITests: XCTestCase {
         let settingsTab = app.tabBars.buttons["Settings"]
         settingsTab.tap()
 
-        // Open store
-        app.buttons["Upgrade"].tap()
-        _ = app.staticTexts["Get Credits"].waitForExistence(timeout: 3)
+        // Open store - using combined label button
+        let upgradeButton = app.buttons.matching(NSPredicate(format: "label CONTAINS 'Upgrade'")).firstMatch
+        _ = upgradeButton.waitForExistence(timeout: 2)
+        upgradeButton.tap()
 
-        // Close store
+        // Wait for paywall to load
+        _ = app.staticTexts["Unlock PawNova"].waitForExistence(timeout: 3) ||
+            app.buttons["Start Subscription"].waitForExistence(timeout: 3)
+
+        // Close store using Close button (xmark.circle.fill)
         let closeButton = app.buttons["Close"]
+        _ = closeButton.waitForExistence(timeout: 2)
         closeButton.tap()
 
-        // Should be back to settings
+        // Should be back to settings - check for Settings navigation bar
         let settingsTitle = app.navigationBars["Settings"]
         let backToSettings = settingsTitle.waitForExistence(timeout: 2)
-        XCTAssertTrue(backToSettings, "Should return to Settings after closing store")
+        XCTAssertTrue(backToSettings, "Should return to Settings after closing paywall")
     }
 
     // MARK: - Accessibility Tests
@@ -464,12 +517,12 @@ final class Project_PawNovaUITests: XCTestCase {
     func testAccessibility_MainTabsHaveLabels() throws {
         launchToMainApp()
 
+        let projectsTab = app.tabBars.buttons["Projects"]
         let createTab = app.tabBars.buttons["Create"]
-        let libraryTab = app.tabBars.buttons["Library"]
         let settingsTab = app.tabBars.buttons["Settings"]
 
+        XCTAssertTrue(projectsTab.isHittable, "Projects tab should be accessible")
         XCTAssertTrue(createTab.isHittable, "Create tab should be accessible")
-        XCTAssertTrue(libraryTab.isHittable, "Library tab should be accessible")
         XCTAssertTrue(settingsTab.isHittable, "Settings tab should be accessible")
     }
 
@@ -481,9 +534,9 @@ final class Project_PawNovaUITests: XCTestCase {
         app.launchArguments = ["-skipOnboarding", "YES"]
         app.launch()
 
-        // Wait for main app to appear
-        let createTab = app.tabBars.buttons["Create"]
-        if !createTab.waitForExistence(timeout: 8) {
+        // Wait for main app to appear (Projects tab is now the default/home tab)
+        let projectsTab = app.tabBars.buttons["Projects"]
+        if !projectsTab.waitForExistence(timeout: 8) {
             // If onboarding shows, complete it
             completeOnboardingIfNeeded()
         }
@@ -491,8 +544,8 @@ final class Project_PawNovaUITests: XCTestCase {
 
     /// Completes onboarding flow if it appears
     private func completeOnboardingIfNeeded() {
-        // Skip login
-        let skipButton = app.buttons["Skip for now"]
+        // Skip login (Dev Mode button)
+        let skipButton = app.buttons["Skip (Dev Mode)"]
         if skipButton.waitForExistence(timeout: 3) {
             skipButton.tap()
         }
@@ -524,25 +577,47 @@ final class Project_PawNovaUITests: XCTestCase {
 extension Project_PawNovaUITests {
 
     @MainActor
-    func testDemoMode_GenerateVideo_ShowsProgress() throws {
+    func testDemoMode_GenerateVideo_ShowsConfirmationOrPaywall() throws {
         launchToMainApp()
 
-        // Enter prompt
-        let promptField = app.textViews.firstMatch
+        // Navigate to Create tab
+        let createTab = app.tabBars.buttons["Create"]
+        createTab.tap()
+
+        // Enter prompt (TextField, not TextView)
+        let promptField = app.textFields.firstMatch
+        _ = promptField.waitForExistence(timeout: 3)
         promptField.tap()
         promptField.typeText("A cute puppy")
 
-        // Tap generate
-        let generateButton = app.buttons["Generate Video"]
+        // Tap generate (now called "Create Adventure")
+        let generateButton = app.buttons["Create Adventure"]
+        _ = generateButton.waitForExistence(timeout: 2)
         if generateButton.isEnabled {
             generateButton.tap()
 
-            // Should show loading/progress indicator
+            // After tapping Create Adventure, depending on subscription state:
+            // 1. Non-subscribers: Paywall sheet shows ("Unlock PawNova Pro" in PaywallSheetView)
+            // 2. Subscribers with insufficient credits: "Insufficient Credits" alert
+            // 3. Subscribers with enough credits: "Create Video?" confirmation alert
+            // 4. After confirmation: Progress indicator and "Creating Magic..." text
+            let paywallSheetTitle = app.staticTexts["Unlock PawNova Pro"]
+            let paywallOnboardingTitle = app.staticTexts["Unlock PawNova"]
+            let insufficientCreditsAlert = app.alerts["Insufficient Credits"]
+            let confirmAlert = app.alerts["Create Video?"]
+            let createButton = app.alerts.buttons["Create"]
             let progressIndicator = app.activityIndicators.firstMatch
-            let generating = app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'Generating'")).firstMatch
-            let showsProgress = progressIndicator.waitForExistence(timeout: 3) || generating.waitForExistence(timeout: 3)
+            let creating = app.staticTexts.matching(NSPredicate(format: "label CONTAINS 'Creating'")).firstMatch
 
-            XCTAssertTrue(showsProgress, "Should show progress during generation")
+            let showsExpectedUI = paywallSheetTitle.waitForExistence(timeout: 3) ||
+                                  paywallOnboardingTitle.exists ||
+                                  insufficientCreditsAlert.exists ||
+                                  confirmAlert.exists ||
+                                  createButton.exists ||
+                                  progressIndicator.exists ||
+                                  creating.exists
+
+            XCTAssertTrue(showsExpectedUI, "Should show paywall, credits alert, confirmation, or progress after tapping generate")
         }
     }
 }

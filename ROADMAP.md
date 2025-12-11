@@ -149,11 +149,51 @@
 - [ ] TestFlight beta
 - [ ] App Store submission
 
+## Phase 5: iOS 18 Cutting-Edge Features
+
+### 5.1 SwiftData iOS 18 Enhancements
+- [x] `#Index` macro for faster queries (already implemented)
+- [x] `#Unique` compound constraints on PetVideo (prevent duplicate URLs) ✅
+- [ ] History API exploration for future sync capabilities
+
+### 5.2 SwiftUI iOS 18 Features
+- [x] `MeshGradient` for richer visual backgrounds (PawNovaMeshGradient in SplashView) ✅
+- [x] Floating tab bar → sidebar transition (iPad support via .sidebarAdaptable) ✅
+- [ ] `onScrollGeometryChange` for scroll-aware UI effects
+- [ ] Metal shader pre-compilation for smoother animations
+
+### 5.3 Live Activities (ActivityKit)
+- [x] Create `VideoGenerationAttributes` for Live Activity data ✅
+- [x] Dynamic Island compact/expanded views showing generation progress ✅
+- [x] Lock Screen live updates during video creation ✅
+- [x] Integration with `GenerationProgressManager` ✅
+- [x] End activity with video thumbnail on completion ✅
+- [x] Widget Extension target created with Live Activity support ✅
+
+### 5.4 Interactive Widgets (WidgetKit)
+- [x] Widget extension code created (PawNova/) ✅
+- [x] Small widget: Recent video + video count ✅
+- [x] Medium widget: Recent videos list + Create button ✅
+- [x] SharedDataManager for App Group communication ✅
+- [x] Widget timeline provider ✅
+- [x] Widget Extension target added (PawNovaExtension) ✅
+- [x] App Group capability added: `group.com.pawnova.shared` ✅
+
+### 5.5 Apple Intelligence / Foundation Models (iOS 18.1+)
+- [x] On-device prompt enhancement via `FoundationModelService` ✅
+- [ ] `@Generable` struct for structured AI outputs (future enhancement)
+- [x] Smart suggestions based on pet name and history ✅
+- [x] Graceful fallback for devices without Apple Intelligence ✅
+- [x] `FoundationModelService.swift` created with `LanguageModelSession` integration ✅
+
+---
+
 ## Tech Stack Summary
 
 | Layer | Technology |
 |-------|------------|
-| Frontend | SwiftUI, SwiftData, AVKit |
+| Frontend | SwiftUI (iOS 18), SwiftData, AVKit |
+| iOS 18 | WidgetKit, ActivityKit, Foundation Models |
 | Auth | Supabase Auth + Sign in with Apple |
 | Database | Supabase (PostgreSQL) |
 | Storage | Supabase Storage (photos/videos) |

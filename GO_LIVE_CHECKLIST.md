@@ -5,28 +5,29 @@ Complete these items before submitting to the App Store.
 ## Pre-Submission Checklist
 
 ### 1. Code Quality
-- [ ] All tests passing (`Cmd+U`)
-- [ ] SwiftLint clean (`swiftlint lint`)
-- [ ] No compiler warnings
-- [ ] Demo mode OFF by default for production
-- [ ] Remove all `print()` statements
+- [x] All tests passing (`Cmd+U`) ✅ 81 tests pass
+- [ ] SwiftLint clean (`swiftlint lint`) ⚠️ 1 error, 100 warnings (mostly trailing_comma, attributes)
+- [x] No compiler warnings ✅ Clean build
+- [ ] Demo mode OFF by default for production ⚠️ Currently `true` in FalService.swift:198
+- [ ] Remove all `print()` statements ⚠️ 5 found (DiagnosticsService, ErrorHandling, SplashView)
 - [ ] Remove any test/debug code
-- [x] No force-unwrapped URLs from external sources ✅ Fixed in FalService, VideoDetailView
-- [x] AVPlayer cleanup in all onDisappear blocks ✅ Fixed in GeneratedVideoSheet, VideoDetailView
+- [ ] No force-unwrapped URLs from external sources ⚠️ 7 URL force unwraps in FalService, SettingsView, FAQView
+- [x] AVPlayer cleanup in all onDisappear blocks ✅ All 4 video views have proper cleanup
+- [ ] Remove `try!` usage ⚠️ 1 found in ProjectsView.swift:265 (preview code)
 
 ### 2. Security (CRITICAL)
-- [ ] `GoogleService-Info.plist` in `.gitignore` (remove from git history if committed)
+- [ ] `GoogleService-Info.plist` in `.gitignore` ⚠️ **TRACKED IN GIT** - needs removal from history
 - [x] Sensitive data stored in Keychain (SecureStorage), NOT UserDefaults ✅ Migrated
 - [x] Credits and subscription status use SecureUserData.shared ✅ All files updated
-- [ ] No hardcoded API keys in source code
-- [x] URL validation with guard statements (no force unwraps) ✅ FalService fixed
+- [x] No hardcoded API keys in source code ✅ Uses ProcessInfo.processInfo.environment
+- [ ] URL validation with guard statements (no force unwraps) ⚠️ 7 force unwraps remain
 - [x] Network connectivity checked before API calls ✅ Added to FalService
 - [x] URLSession configured with explicit timeouts ✅ 30s request, 5min resource
 
 ### 3. API & Backend
-- [ ] fal.ai API key stored securely (NOT in code)
-- [ ] Production API endpoints configured
-- [ ] Error handling for all API calls
+- [x] fal.ai API key stored securely (NOT in code) ✅ Uses environment variable FAL_KEY
+- [x] Production API endpoints configured ✅ fal.ai endpoints in AIModel enum
+- [x] Error handling for all API calls ✅ 21 do-catch blocks, comprehensive error types
 - [ ] Rate limiting considered
 - [ ] Backend proxy set up (recommended - hide API key from client)
 - [ ] Receipt validation for purchases (server-side recommended)
@@ -77,9 +78,10 @@ Complete these items before submitting to the App Store.
 ### 6. Privacy & Permissions
 
 #### Info.plist Keys:
-- [ ] `NSPhotoLibraryAddUsageDescription` - "PawNova needs access to save videos to your Photos"
+- [ ] `NSPhotoLibraryAddUsageDescription` - "PawNova needs access to save videos to your Photos" ⚠️ **MISSING**
 - [ ] `NSCameraUsageDescription` - "PawNova needs camera access to capture pet photos" (if using camera)
 - [ ] `NSUserTrackingUsageDescription` - Only if using ATT
+- [ ] `NSSupportsLiveActivities` = YES ⚠️ **MISSING** - Required for Live Activities
 
 #### App Privacy (App Store Connect):
 - [ ] Data types collected declared
@@ -125,6 +127,23 @@ Complete these items before submitting to the App Store.
 - [ ] App icon variations
 - [ ] Press kit (optional)
 - [ ] Social media assets
+
+### 11. iOS 18 Features (Implemented)
+- [x] SwiftData `#Unique` constraint on PetVideo ✅
+- [x] SwiftUI MeshGradient in SplashView ✅
+- [x] Floating tab bar with `.sidebarAdaptable` for iPad ✅
+- [x] Live Activities (Dynamic Island + Lock Screen) ✅
+- [x] Interactive Widgets (Small + Medium) ✅
+- [x] Widget Extension target (PawNovaExtension) ✅
+- [x] App Group for widget communication ✅
+- [x] Foundation Models service (iOS 26.0+) ✅
+
+### 12. Test Suite Audit (Post-Fixes)
+- [ ] Run full test suite after fixes
+- [ ] Add tests for new iOS 18 features (widgets, live activities)
+- [ ] Test Foundation Models fallback behavior
+- [ ] Verify widget data sharing works
+- [ ] Test Live Activity start/update/end cycle
 
 ---
 
